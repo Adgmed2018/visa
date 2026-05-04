@@ -100,10 +100,10 @@ mindmap
 ```mermaid
 %%{init: {'theme': 'base'}}%%
 flowchart LR
-    A[(&) LACUNA Detected] --> B{Decision?}
-    B -->|Resolved| C[(&) Pass]
+    A["(&) LACUNA Detected"] --> B{Decision?}
+    B -->|Resolved| C["(&) Pass"]
     B -->|Risk Accepted| C
-    B -->|Pending| D[(&) BLOCK]
+    B -->|Pending| D["(&) BLOCK"]
 ```
 
 ---

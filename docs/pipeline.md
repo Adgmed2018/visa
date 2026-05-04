@@ -8,36 +8,36 @@ Este documento descreve o pipeline completo de Spec-Driven Development (SDD) e c
 %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#2d2d2d', 'primaryTextColor': '#fff'}}}%%
 flowchart TB
     subgraph PRE["Pre-Discovery (Visa)"]
-        E1[(&) Ethnographer<br/>Domain Mapping]
-        E2[(&) Strategist<br/>Journey Analysis]
-        E3[(&) Collector<br/>Evidence Gathering]
+        E1["(&) Ethnographer<br/>Domain Mapping"]
+        E2["(&) Strategist<br/>Journey Analysis"]
+        E3["(&) Collector<br/>Evidence Gathering"]
     end
 
     subgraph SYN["Synthesis (Visa)"]
-        S1[(&) Paradigm Advisor<br/>Architecture Patterns]
-        S2[(&) Modeler<br/>Domain Model]
-        S3[(&) Data Modeler<br/>Data Design]
-        S4[(&) Design System<br/>UI/UX Standards]
+        S1["(&) Paradigm Advisor<br/>Architecture Patterns"]
+        S2["(&) Modeler<br/>Domain Model"]
+        S3["(&) Data Modeler<br/>Data Design"]
+        S4["(&) Design System<br/>UI/UX Standards"]
     end
 
     subgraph SPEC["Specification (Visa)"]
-        SP1[(&) Redactor<br/>SDD Specs]
-        SP2[(&) Strategist<br/>Business Rules]
-        SP3[(&) Inspector<br/>Quality Gates]
+        SP1["(&) Redactor<br/>SDD Specs"]
+        SP2["(&) Strategist<br/>Business Rules"]
+        SP3["(&) Inspector<br/>Quality Gates"]
     end
 
     subgraph HANDOFF["Handoff (Visa)"]
-        H1[(&) Reviewer<br/>Final Audit]
-        H2[(&) Handoff<br/>Documentation]
+        H1["(&) Reviewer<br/>Final Audit"]
+        H2["(&) Handoff<br/>Documentation"]
     end
 
     subgraph BRIDGE["Bridge"]
-        BR[(&) visa bridge<br/>Collector Gate]
+        BR["(&) visa bridge<br/>Collector Gate"]
     end
 
     subgraph IMP["Implementation"]
-        PG[(**) paridade-guard<br/>Spec Gate]
-        GC[(&) git commit<br/>Code Implementation]
+        PG["(**) paridade-guard<br/>Spec Gate"]
+        GC["(&) git commit<br/>Code Implementation"]
     end
 
     PRE --> SYN --> SPEC --> HANDOFF --> BRIDGE
@@ -173,22 +173,22 @@ _visa_sdd/
 %%{init: {'theme': 'base'}}%%
 flowchart LR
     subgraph V["Visa (Forward Discovery)"]
-        V1[(&) Ethnographer]
-        V2[(&) Strategist]
-        V3[(&) Coletor]
-        V4[(&) Redactor]
+        V1["(&) Ethnographer"]
+        V2["(&) Strategist"]
+        V3["(&) Coletor"]
+        V4["(&) Redactor"]
     end
 
     subgraph PG["paridade-guard (Gatekeeper)"]
-        PG1[(&) Contract]
-        PG2[(&) Inspector]
-        PG3[(&) pre-commit]
+        PG1["(&) Contract"]
+        PG2["(&) Inspector"]
+        PG3["(&) pre-commit"]
     end
 
     subgraph R["Reversa (Reverse Discovery)"]
-        R1[(&) Scout]
-R2[(&) Detective]
-        R3[(&) Writer]
+        R1["(&) Scout"]
+R2["(&) Detective"]
+        R3["(&) Writer"]
     end
 
     V4 --> |"BR-FUTURE-NNN"| PG1

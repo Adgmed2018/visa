@@ -41,33 +41,33 @@ visa install
 %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#2d2d2d', 'primaryTextColor': '#fff', 'primaryBorderColor': '#6c5ce7'}}}%%
 flowchart TB
     subgraph PRE["Pre-Discovery"]
-        E1[(&) Ethnographer<br/>Domain Mapping]
-        E2[(&) Strategist<br/>Journey Analysis]
-        E3[(&) Collector<br/>Evidence Gathering]
+        E1["(&) Ethnographer<br/>Domain Mapping"]
+        E2["(&) Strategist<br/>Journey Analysis"]
+        E3["(&) Collector<br/>Evidence Gathering"]
     end
 
     subgraph SYN["Synthesis"]
-        S1[(&) Paradigm Advisor<br/>Architecture Patterns]
-        S2[(&) Modeler<br/>Domain Model]
-        S3[(&) Data Modeler<br/>Data Design]
-        S4[(&) Design System<br/>UI/UX Standards]
+        S1["(&) Paradigm Advisor<br/>Architecture Patterns"]
+        S2["(&) Modeler<br/>Domain Model"]
+        S3["(&) Data Modeler<br/>Data Design"]
+        S4["(&) Design System<br/>UI/UX Standards"]
     end
 
     subgraph SPEC["Specification"]
-        SP1[(&) Redactor<br/>SDD Specs]
-        SP2[(&) Strategist<br/>Business Rules]
-        SP3[(&) Inspector<br/>Quality Gates]
+        SP1["(&) Redactor<br/>SDD Specs"]
+        SP2["(&) Strategist<br/>Business Rules"]
+        SP3["(&) Inspector<br/>Quality Gates"]
     end
 
     subgraph Handoff["Handoff"]
-        H1[(&) Reviewer<br/>Final Audit]
-        H2[(&) Handoff<br/>Documentation]
+        H1["(&) Reviewer<br/>Final Audit"]
+        H2["(&) Handoff<br/>Documentation"]
     end
 
     PRE --> SYN --> SPEC --> Handoff
 
-    SPEC -->|"BR-FUTURE-NNN|AMB-FUTURE-NNN"| BRIDGE[(&) visa bridge]
-    BRIDGE --> PG[(**) paridade-guard<br/>Gatekeeper]
+    SPEC -->|"BR-FUTURE-NNN|AMB-FUTURE-NNN"| BRIDGE["(&) visa bridge"]
+    BRIDGE --> PG["(**) paridade-guard<br/>Gatekeeper"]
 
     style PRE fill:#1a1a2e,stroke:#6c5ce7
     style SYN fill:#1a1a2e,stroke:#00b894
@@ -159,11 +159,11 @@ The **Collector Gate** is a computational gate that **blocks the pipeline** with
 ```mermaid
 %%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#2d2d2d'}}}%%
 flowchart LR
-    A[(&) LACUNA Detected] --> B{Decision?}
-    B -->|Resolved| C[(&) Pass Gate]
+    A["(&) LACUNA Detected"] --> B{Decision?}
+    B -->|Resolved| C["(&) Pass Gate"]
     B -->|Risk Accepted| C
-    B -->|Pending| D[(&) Block Pipeline]
-    C --> E[(&) Continue]
+    B -->|Pending| D["(&) Block Pipeline"]
+    C --> E["(&) Continue"]
 ```
 
 ---
