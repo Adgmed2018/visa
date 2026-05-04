@@ -1,0 +1,94 @@
+# Pre-commit hooks configuration
+#
+# Install: pip install pre-commit && pre-commit install
+# Run:    pre-commit run --all-files
+# Update: pre-commit autoupdate
+
+repos:
+  # Ruff - Fast Python linter
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.2.0
+    hooks:
+      - id: ruff
+        name: ruff check
+        description: Fast Python linter
+        args: [--fix]
+      
+      - id: ruff-format
+        name: ruff format
+        description: Fast Python formatter
+        args: [--diff]
+
+  # Mypy - Static type checker
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.8.0
+    hooks:
+      - id: mypy
+        name: mypy
+        description: Static type checker
+        additional_dependencies: []
+        args: [
+          --python-version=3.10,
+          --warn-return-any,
+          --warn-unused-ignores,
+          --disallow-untyped-defs,
+          --no-implicit-optional,
+        ]
+        exclude: "^tests/"
+
+  # Markdown lint
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.39.0
+    hooks:
+      - id: markdownlint
+        name: markdownlint
+        description: Markdown linter
+        args: [--config=.markdownlint.json]
+        exclude: "^(LICENSE|CHANGELOG|AUTO-AVALIACAO)/"
+
+  # End-of-file fixer
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: end-of-file-fixer
+        name: end-of-file-fixer
+        description: Ensure files end with newline
+      
+      - id: trailing-whitespace
+        name: trailing-whitespace
+        description: Trim trailing whitespace
+      
+      - id: check-yaml
+        name: check-yaml
+        description: Ensure YAML syntax is valid
+      
+      - id: check-toml
+        name: check-toml
+        description: Ensure TOML syntax is valid
+      
+      - id: check-added-large-files
+        name: check-added-large-files
+        description: Prevent adding large files
+        args: ['--maxkb=500']
+      
+      - id: check-merge-conflict
+        name: check-merge-conflict
+        description: Check for merge conflict strings
+      
+      - id: detect-private-key
+        name: detect-private-key
+        description: Detect private key files
+
+  # Bandit - Security linter
+  - repo: https://github.com/LucasCoudaro/bandit-pre-commit
+    rev: 1.7.6
+    hooks:
+      - id: bandit
+        name: bandit
+        description: Security linter
+        args: [-r, src/, -f, json]
+        pass_filenames: false
+
+ci:
+  autoupdate_schedule: weekly
+  autoupdate_commit_msg: "chore: update pre-commit hooks"

@@ -1,88 +1,222 @@
-# Visa & paridade-guard
-<small>by Adgmed2018</small>
+# Visa — Forward Spec Discovery for AI Agents
 
-**Forward Spec Discovery for AI Agents. Transforme conversas vagas em especificações executáveis e verificáveis.**
+<small>by [Adgmed2018](https://github.com/Adgmed2018)</small>
 
-[![Visa](https://img.shields.io/badge/Visa-v1.1.1-blue?style=for-the-badge&labelColor=2d2d2d)](#)
-[![paridade-guard](https://img.shields.io/badge/paridade--guard-v0.3.0-purple?style=for-the-badge&labelColor=2d2d2d)](#)
-[![Tests](https://img.shields.io/badge/tests-40%2F40%20passing-success?style=for-the-badge&labelColor=2d2d2d)](#)
-[![Python](https://img.shields.io/badge/python-3.10%2B-blue?style=for-the-badge&labelColor=2d2d2d)](#)
-[![License](https://img.shields.io/badge/license-MIT-yellow?style=for-the-badge&labelColor=2d2d2d)](#license)
+**Transformando conversas vagas em especificações executáveis e verificáveis.**
 
----
-
-## Motivo do Projeto
-
-O ecossistema de desenvolvimento assistido por IA (AI-assisted coding) vive hoje uma profunda ilusão de produtividade. Pipelines de prompts são inconsistentes. Agentes "mágicos" prometem criar aplicações inteiras a partir de um parágrafo, mas na prática entregam arquiteturas frágeis, arquivos fantasmas (que o LLM jura ter criado, mas não existem) e absoluta falta de auditoria real.
-
-A Visa nasceu da **frustração técnica com essa ausência de rigor**. É incrivelmente difícil transformar conversas informais com o Claude, GPT ou Codex em artefatos confiáveis, versionáveis e que sigam um padrão lógico. O mercado focou em "escrever código mais rápido" em vez de "garantir que estamos construindo o sistema correto".
-
-Precisávamos de um **sistema de engenharia verificável para agentes de IA** — um protocolo que eleve a extração de requisitos ao mesmo nível de exigência de um pipeline de CI/CD.
+[![PyPI version](https://img.shields.io/pypi/v/visa-sdd?color=blue&style=flat-square&logo=pypi)](https://pypi.org/project/visa-sdd/)
+[![Python versions](https://img.shields.io/pypi/pyversions/visa-sdd?color=blue&style=flat-square&logo=python)](https://pypi.org/project/visa-sdd/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
+[![Code style: Ruff](https://img.shields.io/badge/Code%20style-Ruff-000000?style=flat-square&logo=ruff)](https://docs.astral.sh/ruff/)
+[![Type checked: mypy](https://img.shields.io/badge/Type%20checked-mypy-4300d4?style=flat-square&logo=mypy)](https://mypy.readthedocs.io/)
+[![Tests](https://img.shields.io/badge/Tests-40%2F40%20passing-success?style=flat-square&logo=pytest)](tests/test_visa.py)
+[![Coverage](https://img.shields.io/badge/Coverage-80%25%20%2B-cyan?style=flat-square&logo=codecov)](https://github.com/Adgmed2018/visa/actions)
+[![Downloads](https://img.shields.io/pypi/dm/visa-sdd?color=blue&style=flat-square&logo=downloads)](https://pepy.tech/project/visa-sdd)
+[![pipeline](https://img.shields.io/badge/Pipeline-SDD%20Closed%20Loop-9126f5?style=flat-square&logo=git)](docs/pipeline.md)
+[![Twitter](https://img.shields.io/badge/X%2FTwitter-@Adgmed2018-1DA1F2?style=flat-square&logo=twitter)](https://x.com/Adgmed2018)
 
 ---
 
-## Dores que o Visa resolve
+## TL;DR
 
-A dupla Visa + paridade-guard ataca os principais modos de falha em pipelines de LLM:
-
-- **Alucinações estruturais**: Arquivos que o LLM diz que criou (ou alterou), mas que de fato não existem ou estão incorretos no repositório.
-- **Divergência entre spec e código**: O descompasso entre o que foi descrito e o que realmente é entregue na fase de implementação.
-- **Falta de rastreabilidade e auditoria adversarial**: Impossibilidade de justificar o porquê de uma decisão técnica três semanas após o chat original.
-- **Inconsistência em projetos grandes**: A dificuldade de manter o contexto vivo ao orquestrar múltiplos agentes ao longo do ciclo de vida.
-- **Ausência de formato canônico**: A falta de um contrato confiável e determinístico para trânsito entre a geração de requisitos e a validação do código.
-- **Cobertura falsa de testes e comandos fantasmas**: Quando a IA alega que os testes estão passando sem nunca ter executado um runner real.
-- **Dificuldade de evolução**: A barreira massiva para migrar de prompts "mágicos" descartáveis para processos de engenharia de software de verdade com LLMs.
-
----
-
-## O que é o Visa
-
-A Visa é o motor de descoberta (*Forward Spec Discovery*) de um ciclo completo de **Spec-Driven Development (SDD)**.
-
-Enquanto ferramentas analisam o passado (código legado) para extrair o presente, a Visa ataca o futuro: ela orquestra um time de agentes para descobrir, validar e modelar um domínio de negócio *antes* de qualquer código ser escrito. 
-
-Ela trabalha em simbiose com o **paridade-guard**, que age como o portão de segurança (Gatekeeper). O `paridade-guard` converte os artefatos da Visa em um contrato e bloqueia commits caso o agente de codificação (Claude Code, Cursor) tente desviar do que foi especificado.
-
----
-
-## Instalação
-
-A instalação da Visa e do paridade-guard é feita diretamente via Python (stdlib pura).
+> **A Visa é o espelho à frente do Reversa** — enquanto o Reversa analisa código legado, a Visa descobre especificações *antes* de qualquer código ser escrito.
 
 ```bash
-# 1. Instalar a Visa
+# Install
 pip install visa-sdd
 
-# 2. Instalar o gate de aderência
+# Initialize discovery pipeline
+cd meu-projeto && touch CLAUDE.md
+visa install
+
+# Your AI agent now has 14 specialized agents for spec discovery
+/visa  # Run in Claude Code, Cursor, etc.
+```
+
+---
+
+## Architecture Overview
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#2d2d2d', 'primaryTextColor': '#fff', 'primaryBorderColor': '#6c5ce7'}}}%%
+flowchart TB
+    subgraph PRE["Pre-Discovery"]
+        E1[(&) Ethnographer<br/>Domain Mapping]
+        E2[(&) Strategist<br/>Journey Analysis]
+        E3[(&) Collector<br/>Evidence Gathering]
+    end
+
+    subgraph SYN["Synthesis"]
+        S1[(&) Paradigm Advisor<br/>Architecture Patterns]
+        S2[(&) Modeler<br/>Domain Model]
+        S3[(&) Data Modeler<br/>Data Design]
+        S4[(&) Design System<br/>UI/UX Standards]
+    end
+
+    subgraph SPEC["Specification"]
+        SP1[(&) Redactor<br/>SDD Specs]
+        SP2[(&) Strategist<br/>Business Rules]
+        SP3[(&) Inspector<br/>Quality Gates]
+    end
+
+    subgraph Handoff["Handoff"]
+        H1[(&) Reviewer<br/>Final Audit]
+        H2[(&) Handoff<br/>Documentation]
+    end
+
+    PRE --> SYN --> SPEC --> Handoff
+
+    SPEC -->|"BR-FUTURE-NNN|AMB-FUTURE-NNN"| BRIDGE[(&) visa bridge]
+    BRIDGE --> PG[(**) paridade-guard<br/>Gatekeeper]
+
+    style PRE fill:#1a1a2e,stroke:#6c5ce7
+    style SYN fill:#1a1a2e,stroke:#00b894
+    style SPEC fill:#1a1a2e,stroke:#fdcb6e
+    style Handoff fill:#1a1a2e,stroke:#e17055
+    style BRIDGE fill:#16213e,stroke:#e94560
+    style PG fill:#16213e,stroke:#e94560
+```
+
+---
+
+## Table of Contents
+
+- [Background](#background)
+- [Problem Statement](#problem-statement)
+- [Core Concepts](#core-concepts)
+- [Installation](#installation)
+- [Quick Start](#quick-start)
+- [CLI Reference](#cli-reference)
+- [Canonical Output Format](#canonical-output-format)
+- [Integration: Visa + paridade-guard](#integration-visa--paridade-guard)
+- [Agents Overview](#agents-overview)
+- [Limitations](#limitations)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## Background
+
+The AI-assisted coding ecosystem suffers from a deep **productivity illusion**. Prompt pipelines are inconsistent. "Magic" agents promise to create entire applications from a paragraph, but deliver fragile architectures, phantom files (that the LLM claims to have created but don't exist), and absolute lack of real auditability.
+
+**Visa emerged from technical frustration with this lack of rigor.** It is incredibly difficult to transform informal conversations with Claude, GPT, or Codex into reliable, versionable artifacts that follow a logical pattern. The market focused on "writing code faster" instead of "ensuring we are building the correct system."
+
+We needed a **verifiable software engineering system for AI agents** — a protocol that elevates requirements extraction to the same level of rigor as a CI/CD pipeline.
+
+---
+
+## Problem Statement
+
+The Visa + paridade-guard duo attacks the main failure modes in LLM pipelines:
+
+| Problem | Description |
+|---------|-------------|
+| **Structural Hallucinations** | Files that the LLM says it created (or modified), but don't actually exist in the repository. |
+| **Spec-Code Divergence** | The gap between what was described and what is actually delivered during implementation. |
+| **Lack of Traceability** | Inability to justify why a technical decision was made three weeks after the original chat. |
+| **Inconsistency at Scale** | Difficulty maintaining context when orchestrating multiple agents throughout the lifecycle. |
+| **No Canonical Format** | Lack of a reliable, deterministic contract for transit between requirements generation and code validation. |
+| **Phantom Tests** | When AI claims tests are passing without ever running a real test runner. |
+| **Evolution Barrier** | Massive barrier to migrate from "magic" disposable prompts to real software engineering processes with LLMs. |
+
+---
+
+## Core Concepts
+
+### Spec-Driven Development (SDD)
+
+SDD is a development methodology with a **closed feedback loop**:
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#2d2d2d'}}}%%
+stateDiagram-v2
+    [*] --> PreForja: Idea
+    PreForja --> Forja: Forward Discovery (Visa)
+    Forja --> Reversa: Implementation
+    Reversa --> Genese: Code Review
+    Genese --> Regente: Spec Update
+    Regente --> Forja: New Cycle
+    Regente --> [*]: Shipped
+```
+
+### Canonical IDs
+
+Every specification has a **canonical ID** for traceability:
+
+| Prefix | Meaning | Example |
+|--------|---------|---------|
+| `BR-FUTURE-NNN` | Business rule to implement | `BR-FUTURE-001` |
+| `BR-DESCARTAR-NNN` | Deliberate non-implementation | `BR-DESCARTAR-001` |
+| `BR-HUMANA-NNN` | Human decision | `BR-HUMANA-001` |
+| `AMB-FUTURE-NNN` | Ambiguity to resolve | `AMB-FUTURE-001` |
+| `LACUNA-NNN` | Evidence gap requiring validation | `LACUNA-001` |
+
+### Collector Gate
+
+The **Collector Gate** is a computational gate that **blocks the pipeline** without evidence:
+
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#2d2d2d'}}}%%
+flowchart LR
+    A[(&) LACUNA Detected] --> B{Decision?}
+    B -->|Resolved| C[(&) Pass Gate]
+    B -->|Risk Accepted| C
+    B -->|Pending| D[(&) Block Pipeline]
+    C --> E[(&) Continue]
+```
+
+---
+
+## Installation
+
+### Via pip
+
+```bash
+# Install Visa (stdlib pure)
+pip install visa-sdd
+
+# Optional: Install paridade-guard for end-to-end validation
 pip install paridade-guard>=0.3.0
 ```
 
-Para inicializar a descoberta em um novo projeto:
+### From Source
 
 ```bash
-cd meu-novo-projeto
-touch CLAUDE.md # Ou .cursorrules
-visa install
+git clone https://github.com/Adgmed2018/visa.git
+cd visa
+pip install -e .
+```
+
+### Verify Installation
+
+```bash
+visa --version
+# visa 1.3.0
+
+visa status
+#═ Visa — status ═
 ```
 
 ---
 
-## Demo em 5 minutos
+## Quick Start
 
-Você pode testar o ciclo computacional sem nem mesmo gastar tokens de LLM. Execute:
+### Demo: 5-Minute Cycle (No LLM Required)
 
 ```bash
-# 1. Setup inicial
+# 1. Setup
 mkdir demo-sdd && cd demo-sdd && touch CLAUDE.md
 visa install
 
-# 2. Simular a saída canônica do agente Redator (como se houvesse ocorrido a descoberta)
+# 2. Simulate canonical output (as if discovery had occurred)
 cat > _visa_sdd/business_model.md <<'EOF'
 ---
 schemaVersion: 1
 kind: target_business_rules
 producedBy: visa-redator
 ---
+
 # Target Business Rules
 
 ## Regras IMPLEMENTAR
@@ -90,112 +224,232 @@ producedBy: visa-redator
 ### BR-FUTURE-001
 - **Origem**: `_visa_sdd/evidence_results/lac-001.md`
 - **Confiança**: 🟢
-- **Descrição**: Validação de CRM ativo antes de criar agendamento
-- **Justificativa**: Evidência coletada com 5 especialistas confirmou requerimento
+- **Descrição**: CRM validation before scheduling
+- **Justificativa**: Evidence from 5 specialists
 EOF
 
-# 3. Validar estruturalmente o formato canônico
+# 3. Validate structure
 visa validate --strict
-# → ✅ Validação estrutural aprovada.
+# → ✅ Structural validation passed.
 
-# 4. Construir ponte para o gate de implementação
+# 4. Bridge to implementation gate
 visa bridge
-# → 🌉 Symlinks gerados de _visa_sdd/ para o diretório de auditoria
+# → 🌉 Symlinks generated
 
-# 5. paridade-guard gera o contrato (Gatekeeper)
+# 5. paridade-guard generates contract
 paridade-guard contract \
   --migration-dir _visa_sdd/migration \
   --output _visa_sdd/parity_audit/contract.json
 
-# 6. Ativar gate no repositório local
+# 6. Activate gate
 paridade-guard install --pre-commit
-# → A partir de agora, qualquer commit que quebre BR-FUTURE-001 será abortado.
+```
+
+### Full Discovery Cycle
+
+```bash
+# 1. Initialize
+visa install
+
+# 2. Open your AI coding agent (Claude Code, Cursor, etc.)
+#    and type:
+/visa
+
+# 3. Follow the orchestration through agents:
+#    Ethnographer → Strategist → Collector → Modeler → Redactor
+
+# 4. Validate pipeline completion
+visa validate --strict
+
+# 5. Bridge to paridade-guard
+visa bridge
+
+# 6. Activate code gate
+paridade-guard install --pre-commit
 ```
 
 ---
 
-## Como funciona (O Pipeline Completo)
+## CLI Reference
 
-A integração forma um pipeline contínuo de 5 fases operadas nativamente no terminal:
+```text
+usage: visa [-h] [--project-root PROJECT_ROOT] [--version]
+            {install,status,validate,bridge,uninstall}
 
-1. **Descoberta:** Orquestrada via CLI com a Visa. O LLM extrai contexto, personas e necessidades.
-2. **Coleta de Evidências (O Gate):** O agente *Coletor* detecta lacunas (ausência de dados) e **trava o pipeline** até que o humano traga evidências reais. Fim da adivinhação algorítmica.
-3. **Spec Generation:** O agente *Redator* consolida tudo no formato canônico (`_visa_sdd/`).
-4. **Bridge:** O comando `visa bridge` consolida e audita os diretórios, fechando as pontas para a próxima fase.
-5. **Implementação Vigiada:** O código passa a ser escrito. O `paridade-guard` atua no `pre-commit hook` impedindo a violação das especificações levantadas.
+Visa — Forward Spec Discovery for AI Agents
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --project-root        Project root (default: cwd)
+  --version             show program version
+
+commands:
+  install               Install Visa skills in project
+  status                Show discovery status
+  validate              Validate _visa_sdd/ artifacts
+  bridge                Bridge to paridade-guard
+  uninstall             Remove Visa from project
+```
+
+### Commands
+
+| Command | Description | Exit Code |
+|---------|-------------|-----------|
+| `visa install` | Install skills and create `.visa/` state | 0 |
+| `visa status` | Show discovery progress | 0 / 1 |
+| `visa validate` | Check artifact presence | 0 / 2 |
+| `visa validate --strict` | Validate canonical format | 0 / 3 |
+| `visa bridge` | Build bridge + run Collector Gate | 0 / 2 / 4 |
+| `visa uninstall --yes` | Remove Visa silently | 0 |
+| `visa uninstall --purge` | Remove Visa + `_visa_sdd/` | 0 |
+
+### Exit Codes
+
+| Code | Meaning |
+|------|---------|
+| `0` | Success |
+| `1` | Visa not installed / general error |
+| `2` | Missing required artifacts |
+| `3` | Canonical format validation failed |
+| `4` | Collector Gate blocked (unresolved LACUNAs) |
 
 ---
 
-## Agentes incluídos
-
-A Visa orquestra os seguintes **8 agentes** especialistas para dissecar o domínio:
-
-1. **visa** (Orquestrador) — Controla o avanço e policia a escala de evidências (🟢🟡🔴).
-2. **visa-etnografo** — Mapeia o domínio de alto nível, personas e constrói o glossário.
-3. **visa-estrategista** — Cruza perfis com jornadas para isolar dores críticas.
-4. **visa-coletor** — O auditor. Interrompe hipóteses vazias emitindo roteiros de validação reais.
-5. **visa-modelador** — Constrói a proposta de fluxos, arquitetura de software e design estrutural.
-6. **visa-redator** — Emite as especificações imutáveis com IDs únicos (`BR-FUTURE-NNN`).
-7. **visa-revisor** — Executa uma auditoria cruzada antes da consolidação do pacote.
-8. **visa-handoff** — Transforma a documentação descoberta no formato de passagem de bastão (`handoff.md`).
-
----
-
-## Comandos CLI
-
-A CLI possui comandos pragmáticos e rígidos para o ciclo de SDD:
-
-| Comando | Função |
-|---------|--------|
-| `visa install` | Instala skills no projeto e cria o estado isolado em `.visa/`. |
-| `visa status` | Exibe o andamento macro da descoberta. |
-| `visa validate` | Valida a presença dos artefatos obrigatórios. |
-| `visa validate --strict` | Executa linting pesado nos formatos canônicos (front-matters, IDs). |
-| `visa bridge` | **Comando vital.** Executa o gate do Coletor e conecta o output ao verificador de paridade. |
-| `visa uninstall --purge` | Remove completamente os arquivos injetados do repositório. |
-
----
-
-## Formato Canônico gerado
-
-O output não é uma parede de texto informal. É um sistema de arquivos *machine-readable*:
+## Canonical Output Format
 
 ```text
 _visa_sdd/
-├── landscape.md             # Visão etnográfica
-├── gaps.md                  # Gestão de LACUNAS (onde o Coletor atua)
-├── evidence_plans/          # Planos forçados de coleta de dados empíricos
-├── business_model.md        # [CANÔNICO] Target Business Rules com schemaVersion: 1
-├── ambiguity_log.md         # [CANÔNICO] Diário de decisões sobre incertezas
-├── discard_log.md           # [CANÔNICO] Decisões explícitas de não-implementação
-├── sdd/                     # Documentação aprofundada por componente
-└── migration/               # [BRIDGE] Symlinks lidos pelo paridade-guard
+├── landscape.md              # Ethnographic view
+├── gaps.md                  # LACUNA management (Collector Gate)
+├── evidence_plans/           # Forced evidence collection plans
+├── evidence_results/         # Collected empirical data
+├── business_model.md        # [CANONICAL] Target Business Rules
+├── discard_log.md           # [CANONICAL] Deliberate non-implementation
+├── ambiguity_log.md         # [CANONICAL] Uncertainty log
+├── confidence-report.md     # [CANONICAL] Paradigm decision
+├── sdd/                     # Deep dive documentation by component
+└── migration/               # [BRIDGE] Symlinks to paridade-guard
+```
+
+### Front-Matter Schema
+
+```yaml
+---
+schemaVersion: 1
+kind: target_business_rules      # or: discard_log, ambiguity_log, paradigm_decision
+producedBy: visa-redator        # or: visa-revisor, visa-strategist
+timestamp: 2025-01-15T10:30:00Z
+---
 ```
 
 ---
 
-## Limitações conhecidas
+## Integration: Visa + paridade-guard
 
-Somos devotos de uma engenharia de software pragmática e honesta. Conheça as limitações arquiteturais:
+```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#2d2d2d'}}}%%
+sequenceDiagram
+    participant User
+    participant Visa
+    participant ClaudeCode
+    participant VisaCLI
+    participant ParidadeGuard
+    participant Git
 
-- **Regex para bloqueio de Lacunas**: O gate do Coletor (`visa bridge`) audita `gaps.md` usando Expressões Regulares contra cabeçalhos Markdown. Modificações pesadas no formato gerado quebram a trava temporariamente.
-- **Falha silenciosa sem LLMs disciplinados**: A Visa não roda os modelos; ela injeta skills locais. Modelos de baixa capacidade intelectual podem produzir saídas Markdown inválidas, que falharão posteriormente no `visa validate --strict`.
-- **Análise Semântica Passiva**: O `paridade-guard` não roda o código. Ele atua via inspeção estática no `git diff`. Não isenta a responsabilidade de executar testes unitários (TDD).
+    User->>Visa: /visa (in Claude Code)
+    ClaudeCode->>Visa: Discovery through 14 agents
+    ClaudeCode->>VisaCLI: Generate canonical specs
+    
+    Note over VisaCLI: visa bridge
+    VisaCLI->>ParidadeGuard: Generate contract
+    
+    Note over ParidadeGuard: paridade-guard contract
+    ParidadeGuard->>Git: Install pre-commit hook
+    
+    User->>Git: git commit
+    Git->>ParidadeGuard: Check spec compliance
+    ParidadeGuard-->>Git: Block if non-compliant
+    ParidadeGuard-->>Git: Allow if compliant
+```
+
+---
+
+## Agents Overview
+
+| # | Agent | Role | Confidence Scale |
+|---|-------|------|-----------------|
+| 1 | `visa` | Orchestrator | 🟢🟡🔴 |
+| 2 | `visa-etnografo` | Domain mapping | 🟢🟡🔴 |
+| 3 | `visa-estrategista` | Journey analysis | 🟢🟡🔴 |
+| 4 | `visa-coletor` | Evidence auditor | 🟢🟡🔴 |
+| 5 | `visa-paradigm-advisor` | Architecture patterns | 🟢🟡 |
+| 6 | `visa-modelador` | Domain model | 🟢🟡 |
+| 7 | `visa-data-modeler` | Data design | 🟢🟡 |
+| 8 | `visa-design-system` | UI/UX standards | 🟢🟡 |
+| 9 | `visa-redator` | SDD specs | 🟢🟡🔴 |
+| 10 | `visa-strategist` | Business rules | 🟢🟡🔴 |
+| 11 | `visa-inspector` | Quality gates | 🟢🟡 |
+| 12 | `visa-revisor` | Final audit | 🟢🟡🔴 |
+| 13 | `visa-handoff` | Documentation | 🟢🟡 |
+| 14 | `visa-agents-help` | Help system | 🟢 |
+
+### Confidence Scale
+
+| Symbol | Meaning | Action |
+|--------|---------|--------|
+| 🟢 | High confidence | Proceed |
+| 🟡 | Medium confidence | Validate with evidence |
+| 🔴 | Low confidence | Block until evidence collected |
+
+---
+
+## Limitations
+
+We are devoted to pragmatic, honest software engineering. Know the architectural limitations:
+
+| Limitation | Impact | Mitigation |
+|-----------|--------|------------|
+| **Regex-based LACUNA Detection** | The Collector Gate (`visa bridge`) audits `gaps.md` using regex. Heavy modifications to generated format may temporarily break the lock. | Maintain canonical format from Redactor v1.1+ |
+| **Silent Failure with Undisciplined LLMs** | Visa doesn't run models; it injects local skills. Low-capacity models may produce invalid Markdown that fails in `visa validate --strict`. | Use capable models (Claude, GPT-4 class) |
+| **Passive Static Analysis** | `paridade-guard` doesn't run code. It works via static inspection on `git diff`. Doesn't exempt running unit tests. | Always run TDD alongside |
 
 ---
 
 ## Contributing
 
-Pull Requests (PRs) para melhorias estruturais são sempre bem-vindos, contanto que mantenham a essência do "Ciclo SDD Fechado".
-Ao enviar um PR:
-1. Certifique-se de não adicionar bibliotecas de terceiros (somos 100% *stdlib*).
-2. Garanta que a suíte de testes original (`test_visa.py`) passe perfeitamente.
-3. Não suavize o gate computacional do Coletor. A exigência de evidências é sagrada.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
-Abra uma [Issue](#) para debater mudanças de arquitetura.
+**Key principles:**
+- ✅ **100% stdlib** — No third-party dependencies
+- ✅ **40+ passing tests** — Maintain test coverage
+- ✅ **Collector Gate integrity** — Evidence requirements are sacred
+- ❌ **No external libraries** — stdlib purity is non-negotiable
+
+---
+
+## Security
+
+See [SECURITY.md](SECURITY.md) for vulnerability reporting.
+
+---
+
+## Related Projects
+
+| Project | Description |
+|---------|-------------|
+| [reversa](https://github.com/sandeco/reversa) | Reverse Spec Discovery — code to specs |
+| [paridade-guard](https://github.com/Adgmed2018/paridade-guard) | Gatekeeper — spec compliance validator |
+| [trindade](https://github.com/Adgmed2018/trindade-platform) | SDD CLI platform |
+| [ciclo-sdd](https://github.com/Adgmed2018/ciclo-sdd) | Closed-loop SDD ecosystem |
 
 ---
 
 ## License
 
-MIT — veja [LICENSE](LICENSE) para os detalhes. O conhecimento pertence ao ecossistema.
+MIT — see [LICENSE](LICENSE) for details. Knowledge belongs to the ecosystem.
+
+---
+
+<p align="center">
+  <strong>Built with rigor. Shipped with confidence.</strong>
+</p>
