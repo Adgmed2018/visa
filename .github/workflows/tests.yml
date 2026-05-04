@@ -1,0 +1,79 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Testes Visa (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.10', '3.11', '3.12']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Visa (modo editable)
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+
+      - name: Install paridade-guard (para teste end-to-end)
+        run: |
+          pip install paridade-guard>=0.3.0
+
+      - name: Verify CLI installed
+        run: |
+          visa --version
+          paridade-guard --version
+
+      - name: Run test suite (sem skips esperados)
+        run: |
+          python3 tests/test_visa.py
+          # Exit code 0 = tudo passou, 1 = falha, 2 = houve skip.
+          # CI deve falhar em qualquer não-zero — paridade-guard está
+          # instalado acima, então skip indicaria bug.
+
+      - name: Smoke test do demo do README
+        run: |
+          mkdir /tmp/smoke && cd /tmp/smoke
+          touch CLAUDE.md
+          visa install
+          visa --help
+          visa status
+          # Cria artefato canônico mínimo
+          mkdir -p _visa_sdd
+          cat > _visa_sdd/business_model.md <<'EOF'
+          ---
+          schemaVersion: 1
+          kind: target_business_rules
+          producedBy: visa-redator
+          ---
+          # Target Business Rules
+          ### BR-FUTURE-001
+          - **Confiança**: 🟢
+          - **Descrição**: Regra de smoke test
+          - **Justificativa**: CI smoke
+          EOF
+          visa bridge
+          paridade-guard contract \
+            --migration-dir _visa_sdd/migration \
+            --output _visa_sdd/parity_audit/contract.json
+          # Esperar pelo menos 1 cláusula no contrato
+          python3 -c "
+          import json, sys
+          c = json.load(open('_visa_sdd/parity_audit/contract.json'))
+          assert c['summary']['total_clauses'] >= 1, c['summary']
+          print('✅ Smoke test passou:', c['summary'])
+          "
+          visa uninstall --yes

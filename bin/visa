@@ -1,0 +1,20 @@
+#!/usr/bin/env python3
+"""visa — entry point para modo dev (sem pip install).
+
+Em modo dev (clone do repo), este script adiciona src/ ao sys.path e
+chama visa_sdd.cli.main(). Em modo instalado via pip, use diretamente
+o comando `visa` que o setuptools cria a partir do entry point.
+"""
+import sys
+from pathlib import Path
+
+# Adicionar src/ ao path para encontrar visa_sdd quando rodando sem pip install
+_repo = Path(__file__).resolve().parent.parent
+_src = _repo / "src"
+if _src.exists() and str(_src) not in sys.path:
+    sys.path.insert(0, str(_src))
+
+from visa_sdd.cli import main
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,0 +1,160 @@
+# Changelog
+
+Todas as mudanças notáveis na Visa estão documentadas aqui.
+
+Formato: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+versionamento: [SemVer](https://semver.org/).
+
+## [1.3.0] - 2026-05-04
+
+### Adicionado — Espelhamento parcial honesto contra Reversa real
+
+Após auditoria adversarial contra o ZIP do Reversa real (18 agentes), a
+Visa expandiu de 8 → **14 agentes**, cobrindo 87.5% do conjunto aplicável.
+
+**6 novos agentes implementados**:
+
+- **visa-paradigm-advisor** — espelha `reversa-paradigm-advisor`. Força
+  decisão consciente do paradigma alvo (Clean Architecture / OO+DI / FP /
+  event-driven) baseado em domínio e maturidade da equipe. Produz
+  `paradigm_decision.md`.
+- **visa-data-modeler** — espelha `reversa-data-master`. Modela esquema
+  de dados prospectivo (ERD em Mermaid, tabelas, FKs, CHECK constraints
+  derivadas das regras BR-FUTURE-NNN). Produz artefatos em
+  `_visa_sdd/database/`.
+- **visa-design-system** — espelha `reversa-design-system`. Propõe
+  paleta semântica, escala tipográfica, tokens de espaçamento, inventário
+  de componentes. Produz artefatos em `_visa_sdd/design-system/`.
+- **visa-strategist** — espelha `reversa-strategist`. Propõe estratégia
+  de go-to-market e MVP roadmap com 2-3 alternativas justificadas.
+  Produz `gtm_strategy.md`, `risk_register.md`, `mvp_roadmap.md`.
+- **visa-inspector** — espelha `reversa-inspector`. Define critérios de
+  aceitação prospectivos em Gherkin (um `.feature` por `BR-FUTURE-NNN`)
+  + coverage matrix. Conexão direta com paridade-guard.
+- **visa-agents-help** — espelha `reversa-agents-help`. Guia com analogias
+  dos 14 agentes da Visa.
+
+**Decisões conscientes declaradas no README**:
+
+- **Consolidados em `visa-redator`** (3 → 1): `reversa-writer + curator
+  + designer`. Razão: na Visa não há "decidir o que migrar" nem "redesenhar
+  código" — só "escrever o spec canônico do que descobrimos".
+- **Não espelhados (2)**: `reversa-visor` (extrai UI de screenshots; não
+  aplica forward) e `reversa-reconstructor` (auto-reimplementa código;
+  Visa termina no handoff e deixa usuário escolher agente de codificação).
+
+### Mudou
+
+- README: seção "Os 14 agentes" reorganizada por times (Orquestrador,
+  Descoberta, Síntese, Spec, Handoff, Utilitário).
+- README: seção "Diferenças do Reversa" detalha caso a caso o
+  espelhamento (1:1, consolidados, não espelhados).
+- Estrutura: `agents/` agora tem 14 subdiretórios, todos com `references/`
+  populadas.
+- AGENTS list em `cli.py` reorganizada por times sequenciais.
+- `state.json["agents"]` agora tem 14 entries (era 8).
+- `visa install` cria 28 arquivos (14 SKILL.md + 14 references/) (era 16).
+
+### Total de testes
+
+- v1.0: 18
+- v1.1: 25
+- v1.1.1: 31
+- v1.2.0: 40 (+9 do gate computacional)
+- v1.3.0: **40** (mantém 40; teste `test_espelhamento_com_reversa_documentado`
+  expandido para 12 mappings 1:1 + 1 consolidado)
+
+## [1.2.0] - 2026-05-04
+
+### Adicionado — Diferenciador técnico real
+
+- **Gate computacional do Coletor** ⭐. `visa bridge` agora **recusa
+  prosseguir** (exit code 4) se `_visa_sdd/gaps.md` tem 🔴 LACUNAS sem
+  decisão explícita. Resolve a limitação histórica em que o Coletor era
+  apenas convenção de prompt.
+
+  Detecção via regex contra padrões `### LACUNA-NNN [<status>]`. Aceita
+  3 formas de marcar decisão:
+  - `### LACUNA-001 [RESOLVIDO]` no heading
+  - `### LACUNA-001 [RISCO ACEITO]` no heading + decisor + justificativa
+  - `accepted_risks:` lista no front-matter YAML
+
+  Override manual: `visa bridge --accept-all-risks="motivo"` (recomendado
+  com motivo, deixa rastro no log).
+
+  Override total: `visa bridge --skip-collector-gate` (não recomendado).
+
+- **9 testes novos** em `TestCollectorGate` cobrindo todos os caminhos:
+  bloqueio em LACUNAS pendentes, aceitação por heading, aceitação por
+  front-matter, override com/sem motivo, skip total, ausência de gaps.md,
+  🔴 inline sem ID estruturado.
+
+- **Seção dedicada no README**: "Gate computacional do Coletor (v1.2)"
+  com tabela de classificações e exemplo de saída quando bloqueia.
+
+### Mudou
+
+- **Total de testes Visa: 31 → 40** (+9 testes do gate).
+- **Limitação "Coletor é convenção, não enforcement"** removida da lista.
+- **Roadmap v1.2** marcado como entregue; novo foco é v1.3 (parsing
+  estruturado de gaps, case study real).
+
+## [1.1.1] - 2026-05-04 (Final)
+
+### Adicionado
+- **`pyproject.toml`** — Visa virou pacote Python instalável via `pip install visa-sdd`.
+  Comando `visa` exposto como entry point. Skills empacotadas como package data.
+- **`LICENSE`** (MIT, igual paridade-guard).
+- **`.gitignore`** Python adequado, incluindo artefatos runtime da própria Visa.
+- **`CHANGELOG.md`** separado do README (este arquivo).
+- **`CONTRIBUTING.md`** com guia de contribuição mínimo.
+- **`.github/workflows/tests.yml`** — CI roda os testes Visa em cada push/PR.
+- **Comando `uninstall`** com `--yes` e `--purge` (era documentado mas fantasma na v1.1).
+- **Modo `validate --strict`** verifica formato canônico (front-matter YAML, IDs `BR-FUTURE-NNN`).
+- **Seção "Diferenças do Reversa"** no README — declara honestamente as
+  assimetrias estruturais (distribuição, contagem de agentes, templates).
+
+### Corrigido
+- **Skip silencioso do teste end-to-end** → `SkipTest` visível, exit code 2 em CI.
+- **`EXPECTED_ARTIFACTS["required"]`** agora inclui `discard_log.md` e
+  `ambiguity_log.md`. Single source of truth com `bridge`.
+- **Bridge cosmética da v1.0** → semântica real desde v1.1: valida formato,
+  cria stub `_visa_sdd/migration/` com symlinks. paridade-guard ≥ 0.3.0
+  consome cláusulas reais (7 cláusulas no demo completo, vs 1 sintética antes).
+- **Pastas `references/` vazias** preenchidas com conteúdo operacional
+  (`step-01-first-run.md`, `step-02-resume.md`, `checkpoint-guide.md`).
+- **3 placeholders genéricos** substituídos por `Adgmed2018/visa`.
+- **README "Cláusulas: 1+"** corrigido para `Cláusulas: 1` (saída literal real).
+- **4 diretórios vazios** removidos (`docs/`, `lib/`, `templates/`, `examples/`).
+
+### Mudou
+- Estrutura: `bin/visa` virou wrapper fino que chama `src/visa_sdd/cli.py`.
+  Permite tanto modo dev (`python3 bin/visa`) quanto modo pacote (`visa` via pip).
+
+### Total de testes
+- v1.0: 18
+- v1.1: 25
+- v1.1.1: 31 (+ 4 testes para `uninstall`, + 2 testes para `--strict`)
+- v1.2.0: **40** (+ 9 testes para gate computacional)
+
+## [1.1.0] - 2026-05-04
+
+### Adicionado
+- **`visa-redator` reescrito** para emitir `business_model.md`,
+  `discard_log.md`, `ambiguity_log.md` no formato canônico Reversa-compatível
+  (`schemaVersion: 1`, IDs `BR-FUTURE-NNN`/`AMB-FUTURE-NNN`,
+  bullets `- **Campo**: valor`).
+- **`visa bridge` reescrito**: valida formato canônico antes de prosseguir,
+  cria stub `_visa_sdd/migration/` com symlinks (não cópia), aborta em
+  pipeline incompleto.
+- **8 pastas `references/` populadas**: corrige defeito histórico em que
+  o orquestrador referenciava `step-01-first-run.md`, `step-02-resume.md`,
+  `checkpoint-guide.md` que não existiam.
+
+### Corrigido
+- v1.0 tinha bridge cosmético; v1.1 fez integração semântica real com paridade-guard.
+
+## [1.0.0] - 2026-05-03
+
+- Versão inicial: 8 agentes, install/status/validate/bridge, 18 testes.
+- Bridge cosmética. Conhecido limitante — corrigido em v1.1.
