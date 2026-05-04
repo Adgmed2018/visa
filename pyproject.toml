@@ -1,6 +1,6 @@
 [project]
 name = "visa-sdd"
-version = "1.4.0"
+version = "1.4.1"
 description = "Forward Spec Discovery for AI Agents — espelho à frente do Reversa, com saída canônica consumível pelo paridade-guard."
 readme = "README.md"
 license = { text = "MIT" }

@@ -5,6 +5,33 @@ Todas as mudanças notáveis na Visa estão documentadas aqui.
 Formato: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 versionamento: [SemVer](https://semver.org/).
 
+## [1.4.1] - 2026-05-04
+
+### Corrigido — Auditoria adversarial pós-v1.4.0
+
+Esta release foi gerada após auditoria adversarial do ZIP da v1.4.0 usando o **Prompt Master de Auditoria + Correção** (4 fases obrigatórias). 3 problemas reais identificados e corrigidos.
+
+#### Bug funcional
+- **`set_quiet(True)` não suprimia INFO/DEBUG**: lógica em `src/visa_sdd/logging.py:112` estava invertida (`if quiet and level >= WARNING: pass` — pass é no-op). Reescrito para `if quiet and level < WARNING: return`. Marcador `xfail` removido do teste correspondente.
+
+#### Bug de testes
+- **Teste e2e do paridade-guard registrado como FAILED em vez de SKIPPED**: `tests/test_visa.py:784` usava `raise SkipTest(...)` (exception customizada local em linha 26) que pytest captura como falha. Substituído por `pytest.skip(...)` (API oficial). Resultado: suite agora termina com `0 failed`.
+
+#### Coverage gap
+- **`logging.py` em 67% (abaixo da meta v1.5)**: adicionados 14 testes em `tests/test_logging_exceptions.py` cobrindo `Spinner`, funções top-level (`success`, `warning`, `error_output`, `info`), suppression behavior em modo quiet, e edge cases de `progress`. Coverage do módulo subiu para **85%**, total do projeto de **80% → 84%**.
+
+### Métricas verificadas
+
+| Métrica | v1.4.0 | v1.4.1 |
+|---|---|---|
+| Pytest | 87 passed + 1 xfail + 1 failed (SkipTest) | **102 passed + 1 skipped + 0 failed** |
+| Coverage total | 80% | **84%** |
+| Coverage logging.py | 67% | **85%** |
+| mypy strict | 0 erros | **0 erros** |
+| ruff | All checks passed | **All checks passed** |
+
+Log reproduzível em `docs/verification/v1.4.1/AUDIT.log`.
+
 ## [1.4.0] - 2026-05-04
 
 ### Corrigido — Bugs reais descobertos por primeira execução verificada

@@ -109,9 +109,9 @@ class VisaLogger:
 
     def _log(self, level: LogLevel, message: str, **extra: Any) -> None:
         """Log interno."""
-        if _G_QUIET and level.value >= LogLevel.WARNING.value:
-            # Em modo quieto, Warning+ ainda aparecem
-            pass
+        # Em modo quieto, suprime DEBUG e INFO; mantém WARNING/ERROR/CRITICAL
+        if _G_QUIET and level.value < LogLevel.WARNING.value:
+            return
 
         if not _should_log(level):
             return

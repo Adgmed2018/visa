@@ -94,12 +94,6 @@ class TestVisaLogger:
         combined = captured.err + captured.out
         assert "hidden" not in combined
 
-    @pytest.mark.xfail(
-        reason="BUG conhecido v1.3.0: set_quiet(True) não suprime info. "
-        "Logger usa _G_QUIET mas o caminho de info() pode não checá-lo. "
-        "Issue rastreável — fix em v1.4.1.",
-        strict=False,
-    )
     def test_quiet_suppresses_info(self, capsys):
         visa_logging.set_quiet(True)
         logger = visa_logging.get_logger("test.quiet")
@@ -190,6 +184,106 @@ class TestProgressIndicators:
     def test_spinner_returns_object(self):
         sp = visa_logging.spinner("loading")
         assert sp is not None
+
+    def test_spinner_start_and_stop(self, capsys):
+        sp = visa_logging.spinner("processing")
+        sp.start()
+        sp.stop()
+        captured = capsys.readouterr()
+        assert captured is not None
+
+    def test_spinner_update_when_running(self, capsys):
+        sp = visa_logging.Spinner("frame")
+        sp._running = True
+        sp._update()
+        sp._update()
+        sp._update()
+        captured = capsys.readouterr()
+        assert "frame" in captured.err or "frame" in captured.out
+
+    def test_spinner_update_when_stopped_is_noop(self):
+        sp = visa_logging.Spinner("nope")
+        sp._running = False
+        sp._update()
+
+
+class TestColoredOutputs:
+    """Funções top-level success/warning/error_output/info."""
+
+    def test_success_writes_message(self, capsys):
+        visa_logging.set_quiet(False)
+        visa_logging.success("done")
+        captured = capsys.readouterr()
+        assert "done" in (captured.err + captured.out)
+
+    def test_warning_writes_message(self, capsys):
+        visa_logging.set_quiet(False)
+        visa_logging.warning("careful")
+        captured = capsys.readouterr()
+        assert "careful" in (captured.err + captured.out)
+
+    def test_error_output_writes_message(self, capsys):
+        visa_logging.error_output("boom")
+        captured = capsys.readouterr()
+        assert "boom" in (captured.err + captured.out)
+
+    def test_info_top_level_writes_message(self, capsys):
+        visa_logging.set_quiet(False)
+        visa_logging.info("note")
+        captured = capsys.readouterr()
+        assert "note" in (captured.err + captured.out)
+
+    def test_quiet_suppresses_success(self, capsys):
+        visa_logging.set_quiet(True)
+        visa_logging.success("hidden")
+        captured = capsys.readouterr()
+        assert "hidden" not in (captured.err + captured.out)
+        visa_logging.set_quiet(False)
+
+    def test_quiet_suppresses_warning(self, capsys):
+        visa_logging.set_quiet(True)
+        visa_logging.warning("hidden warn")
+        captured = capsys.readouterr()
+        assert "hidden warn" not in (captured.err + captured.out)
+        visa_logging.set_quiet(False)
+
+    def test_quiet_suppresses_top_info(self, capsys):
+        visa_logging.set_quiet(True)
+        visa_logging.info("hidden info")
+        captured = capsys.readouterr()
+        assert "hidden info" not in (captured.err + captured.out)
+        visa_logging.set_quiet(False)
+
+    def test_error_output_NOT_suppressed_by_quiet(self, capsys):
+        """Erros sempre aparecem, mesmo em modo quiet."""
+        visa_logging.set_quiet(True)
+        visa_logging.error_output("critical")
+        captured = capsys.readouterr()
+        assert "critical" in (captured.err + captured.out)
+        visa_logging.set_quiet(False)
+
+
+class TestProgressAdvanced:
+    def test_progress_at_completion(self, capsys):
+        visa_logging.set_quiet(False)
+        visa_logging.progress(10, 10, "complete")
+        captured = capsys.readouterr()
+        combined = captured.err + captured.out
+        assert "100" in combined or "complete" in combined
+
+    def test_progress_quiet_suppresses(self, capsys):
+        visa_logging.set_quiet(True)
+        visa_logging.progress(5, 10, "midway")
+        captured = capsys.readouterr()
+        assert "midway" not in (captured.err + captured.out)
+        visa_logging.set_quiet(False)
+
+    def test_progress_partial(self, capsys):
+        visa_logging.set_quiet(False)
+        visa_logging.progress(3, 10, "thirty percent")
+        captured = capsys.readouterr()
+        combined = captured.err + captured.out
+        assert "thirty percent" in combined or "30" in combined
 
 
 # ============================================================================

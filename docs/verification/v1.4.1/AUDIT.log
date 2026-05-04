@@ -1,0 +1,37 @@
+============================================================
+  VISA v1.4.1 — FINAL VERIFICATION (audit closure)
+  Generated: 2026-05-04T19:38:00Z
+============================================================
+
+##### 1. PYTEST #####
+tests/test_visa.py::TestEndToEndComParidadeGuard::test_ciclo_completo_extrai_clausulas_reais SKIPPED [100%]
+
+======================== 102 passed, 1 skipped in 3.63s ========================
+
+##### 2. MYPY STRICT #####
+pyproject.toml: note: unused section(s): module = ['tests.*', 'visa_sdd.__init__']
+Success: no issues found in 4 source files
+
+##### 3. RUFF #####
+All checks passed!
+
+##### 4. COVERAGE #####
+======================== 102 passed, 1 skipped in 9.75s ========================
+Combined data file .coverage.vm.pid1214.XIy7zEvx.HcJONn71koPh
+Name                         Stmts   Miss Branch BrPart  Cover   Missing
+------------------------------------------------------------------------
+src/visa_sdd/__init__.py         4      0      0      0   100%
+src/visa_sdd/cli.py            524     77    206     37    82%   140-142, 151-155, 179-181, 198-199, 245, 246->242, 374->381, 378, 383, 400-401, 432->434, 439, 457-458, 472, 474, 480, 482, 489, 511, 524, 527, 610-611, 626->624, 630->624, 634-641, 655, 714, 720, 731, 840, 854, 864->870, 895, 900-905, 944->951, 948-949, 958-974, 982-986, 987->979, 991-992, 997->995, 1001->995, 1007-1009
+src/visa_sdd/exceptions.py     112     12      8      0    87%   50, 355-376
+src/visa_sdd/logging.py        169     21     34      3    85%   90, 92, 94, 156, 164, 168-170, 206, 322-342
+------------------------------------------------------------------------
+TOTAL                          809    110    248     40    84%
+
+##### 5. CLI VERSION #####
+visa 1.4.1
+
+##### 6. SMOKE TEST #####
+✅ Engines detectadas: Claude Code
+   Engines: claude-code
+   Arquivos criados: 28
+Skills count: 14

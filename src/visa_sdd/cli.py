@@ -26,7 +26,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-VISA_VERSION = "1.4.0"
+VISA_VERSION = "1.4.1"
 
 # Engines suportadas (espelho do detector.js do Reversa)
 ENGINES = [

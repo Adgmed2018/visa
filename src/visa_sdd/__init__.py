@@ -6,7 +6,7 @@ especializados (skills .md), com saída canônica consumível pelo paridade-guar
 
 from __future__ import annotations
 
-__version__ = "1.4.0"
+__version__ = "1.4.1"
 
 # Exports públicos
 from .exceptions import (

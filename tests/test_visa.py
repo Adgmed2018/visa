@@ -19,6 +19,8 @@ import sys
 import tempfile
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parent.parent
 VISA_BIN = ROOT / "bin" / "visa"
 
@@ -176,7 +178,7 @@ class TestInstall:
             _run_visa("install", cwd=tmp_root)
 
             state = json.loads((tmp_root / ".visa" / "state.json").read_text())
-            assert state["version"] == "1.4.0"
+            assert state["version"] == "1.4.1"
             assert state["phase"] is None
             assert state["discovery_level"] == "essencial"
             assert "claude-code" in state["engines"]
@@ -215,7 +217,7 @@ class TestInstall:
 
             # State não deveria ser sobrescrito
             state = json.loads((tmp_root / ".visa" / "state.json").read_text())
-            assert state["version"] == "1.4.0"
+            assert state["version"] == "1.4.1"
 
 
 # ============================================================================
@@ -238,7 +240,7 @@ class TestStatusValidate:
 
             r = _run_visa("status", cwd=tmp_root)
             assert r.returncode == 0
-            assert "1.4.0" in r.stdout
+            assert "1.4.1" in r.stdout
             assert "essencial" in r.stdout
 
     def test_validate_detecta_artefatos_faltantes(self):
@@ -781,7 +783,7 @@ class TestEndToEndComParidadeGuard:
 
     def test_ciclo_completo_extrai_clausulas_reais(self):
         if not self._paridade_guard_disponivel():
-            raise SkipTest(
+            pytest.skip(
                 "paridade-guard não está instalado neste ambiente — "
                 "este teste valida a tese central da v1.1+ e DEVE rodar antes "
                 "de qualquer release. Instale com: pip install paridade-guard>=0.3.0"
