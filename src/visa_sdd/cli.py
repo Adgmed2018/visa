@@ -24,9 +24,9 @@ import shutil
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
-
-VISA_VERSION = "1.3.0"
+VISA_VERSION = "1.4.0"
 
 # Engines suportadas (espelho do detector.js do Reversa)
 ENGINES = [
@@ -209,7 +209,7 @@ def cmd_install(args: argparse.Namespace) -> int:
     # State inicial
     state_path = visa_state / "state.json"
     if not state_path.exists():
-        state = {
+        state: dict[str, Any] = {
             "version": VISA_VERSION,
             "project": project_root.name,
             "user_name": "",
@@ -269,7 +269,7 @@ def cmd_install(args: argparse.Namespace) -> int:
     return 0
 
 
-def _detect_engines(project_root: Path) -> list[dict]:
+def _detect_engines(project_root: Path) -> list[dict[str, Any]]:
     detected = []
     for engine in ENGINES:
         if (project_root / engine["entry"]).exists():
@@ -380,9 +380,9 @@ def cmd_status(args: argparse.Namespace) -> int:
     # Bridge para paridade-guard
     contract_path = project_root / "_visa_sdd" / "parity_audit" / "contract.json"
     if contract_path.exists():
-        print(f" paridade-guard: ✅ contrato gerado")
+        print(" paridade-guard: ✅ contrato gerado")
     else:
-        print(f" paridade-guard: ⚪ não conectado")
+        print(" paridade-guard: ⚪ não conectado")
 
     print("═" * 64)
     return 0
@@ -403,7 +403,7 @@ def cmd_validate(args: argparse.Namespace) -> int:
     strict = getattr(args, "strict", False)
     result = _validate_artifacts(output_folder, strict=strict)
 
-    print(f"Validação de _visa_sdd/" + (" (modo --strict)" if strict else ""))
+    print("Validação de _visa_sdd/" + (" (modo --strict)" if strict else ""))
     print(f"  Obrigatórios: {result['present_required']}/{result['total_required']}")
     print(f"  Opcionais:    {result['present_optional']}/{result['total_optional']}")
     if strict:
@@ -411,29 +411,29 @@ def cmd_validate(args: argparse.Namespace) -> int:
               f"{result['canonical_valid']}/{result['canonical_total']}")
 
     if result["missing_required"]:
-        print(f"\n🛑 Artefatos obrigatórios faltando:")
+        print("\n🛑 Artefatos obrigatórios faltando:")
         for m in result["missing_required"]:
             print(f"   - {m}")
         return 2
 
     if strict and result["canonical_issues"]:
-        print(f"\n🛑 Artefatos canônicos com formato inválido:")
+        print("\n🛑 Artefatos canônicos com formato inválido:")
         for issue in result["canonical_issues"]:
             print(f"   - {issue}")
-        print(f"\nDica: o Redator v1.1+ deve emitir front-matter YAML com "
-              f"`schemaVersion: 1` e `kind: <correto>`, e os IDs canônicos "
-              f"devem aparecer como `### BR-FUTURE-NNN` etc.")
+        print("\nDica: o Redator v1.1+ deve emitir front-matter YAML com "
+              "`schemaVersion: 1` e `kind: <correto>`, e os IDs canônicos "
+              "devem aparecer como `### BR-FUTURE-NNN` etc.")
         return 3
 
     if result["present_required"] == result["total_required"]:
-        print(f"\n✅ Todos os artefatos obrigatórios presentes.")
+        print("\n✅ Todos os artefatos obrigatórios presentes.")
         if strict:
-            print(f"   E todos os canônicos seguem formato Reversa-compatível.")
+            print("   E todos os canônicos seguem formato Reversa-compatível.")
         if result["missing_optional"]:
             print(f"   ({len(result['missing_optional'])} opcionais ausentes — ok)")
         if not strict:
-            print(f"\nℹ️  Para validar TAMBÉM o formato canônico (front-matter, IDs):")
-            print(f"   visa validate --strict")
+            print("\nℹ️  Para validar TAMBÉM o formato canônico (front-matter, IDs):")
+            print("   visa validate --strict")
         return 0
 
     return 1
@@ -445,7 +445,7 @@ _KIND_RE = re.compile(r"^kind\s*:\s*(.+?)\s*$", re.MULTILINE)
 _SCHEMA_RE = re.compile(r"^schemaVersion\s*:\s*(\d+)\s*$", re.MULTILINE)
 
 
-def _check_canonical_format(path: Path, rules: dict) -> list[str]:
+def _check_canonical_format(path: Path, rules: dict[str, Any]) -> list[str]:
     """Verifica formato canônico de um artefato.
 
     Retorna lista de problemas encontrados (vazia se ok).
@@ -495,7 +495,7 @@ def _check_canonical_format(path: Path, rules: dict) -> list[str]:
     return problems
 
 
-def _validate_artifacts(output_folder: Path, strict: bool = False) -> dict:
+def _validate_artifacts(output_folder: Path, strict: bool = False) -> dict[str, Any]:
     present_required = []
     missing_required = []
     for art in EXPECTED_ARTIFACTS["required"]:
@@ -585,7 +585,7 @@ _RISK_ACCEPTED_MARKERS = {"RISCO ACEITO", "RISK ACCEPTED", "ACEITO"}
 _RESOLVED_MARKERS = {"RESOLVIDO", "RESOLVED", "VALIDADO", "FALSEADO"}
 
 
-def _detect_lacunas(gaps_path: Path) -> dict:
+def _detect_lacunas(gaps_path: Path) -> dict[str, Any]:
     """Detecta LACUNAS em gaps.md e classifica por status.
 
     Retorna dict com:
@@ -595,7 +595,7 @@ def _detect_lacunas(gaps_path: Path) -> dict:
       - resolved: LACUNAS resolvidas/validadas/falseadas
       - has_frontmatter_accepted_risks: bool — usuário usou front-matter
     """
-    result = {
+    result: dict[str, Any] = {
         "all": [],
         "pending": [],
         "risk_accepted": [],
@@ -707,7 +707,7 @@ def _check_collector_gate(
 
     if accept_all:
         msgs.append("")
-        msgs.append(f"⚠️  --accept-all-risks ativado.")
+        msgs.append("⚠️  --accept-all-risks ativado.")
         if accept_reason:
             msgs.append(f"   Motivo: {accept_reason}")
         else:
@@ -722,7 +722,7 @@ def _check_collector_gate(
 
     # Bloqueio
     msgs.append("")
-    msgs.append(f"🛑 BRIDGE BLOQUEADA pelo gate do Coletor.")
+    msgs.append("🛑 BRIDGE BLOQUEADA pelo gate do Coletor.")
     msgs.append("")
     msgs.append(f"   {len(pending)} LACUNA(s) sem decisão explícita:")
     for lid in pending[:10]:
@@ -792,7 +792,7 @@ def cmd_bridge(args: argparse.Namespace) -> int:
         print(f"❌ {visa_dir} não existe. Execute a Visa primeiro.")
         return 1
 
-    print(f"🌉 Conectando Visa ao paridade-guard")
+    print("🌉 Conectando Visa ao paridade-guard")
     print(f"   Origem: {visa_dir}")
     print()
 
@@ -908,12 +908,12 @@ def cmd_bridge(args: argparse.Namespace) -> int:
     print(f"Ponte construída: {bridged} arquivos em {migration_stub.relative_to(project_root)}/")
     print()
     print("Próximos passos:")
-    print(f"   1. paridade-guard contract \\")
-    print(f"        --migration-dir _visa_sdd/migration \\")
-    print(f"        --output _visa_sdd/parity_audit/contract.json")
-    print(f"      (extractor v0.3+ entende BR-FUTURE-NNN e AMB-FUTURE-NNN)")
-    print(f"   2. Inspecione _visa_sdd/parity_audit/contract.json")
-    print(f"   3. paridade-guard install --pre-commit")
+    print("   1. paridade-guard contract \\")
+    print("        --migration-dir _visa_sdd/migration \\")
+    print("        --output _visa_sdd/parity_audit/contract.json")
+    print("      (extractor v0.3+ entende BR-FUTURE-NNN e AMB-FUTURE-NNN)")
+    print("   2. Inspecione _visa_sdd/parity_audit/contract.json")
+    print("   3. paridade-guard install --pre-commit")
     print()
     print("ℹ️  paridade-guard ≥ 0.3.0 reconhece artefatos forward nativamente.")
     print("    Versões anteriores tratam BR-FUTURE como prefixo desconhecido")
@@ -955,14 +955,14 @@ def cmd_uninstall(args: argparse.Namespace) -> int:
 
     # Confirmação interativa, exceto se --yes
     if not args.yes:
-        print(f"Vou remover:")
+        print("Vou remover:")
         print(f"  - {state_dir.relative_to(project_root)}/ (state, plan, manifest)")
         print(f"  - {len(created_files)} skills instaladas em "
               f".claude/skills/ e/ou .agents/skills/")
         if args.purge:
-            print(f"  - _visa_sdd/ (output de descoberta) — POR CAUSA DE --purge")
+            print("  - _visa_sdd/ (output de descoberta) — POR CAUSA DE --purge")
         else:
-            print(f"  PRESERVO: _visa_sdd/ (output de descoberta)")
+            print("  PRESERVO: _visa_sdd/ (output de descoberta)")
         print()
         try:
             answer = input("Confirma? [y/N]: ").strip().lower()
@@ -1012,13 +1012,13 @@ def cmd_uninstall(args: argparse.Namespace) -> int:
     visa_sdd = project_root / "_visa_sdd"
     if args.purge and visa_sdd.exists():
         shutil.rmtree(visa_sdd)
-        print(f"✅ _visa_sdd/ removido (--purge).")
+        print("✅ _visa_sdd/ removido (--purge).")
 
     print()
     print(f"✅ Visa desinstalada: {removed_count} arquivos/pastas de skills + .visa/")
     if not args.purge and visa_sdd.exists():
         print(f"   _visa_sdd/ preservado em {visa_sdd.relative_to(project_root)}/")
-        print(f"   Para remover também: visa uninstall --purge")
+        print("   Para remover também: visa uninstall --purge")
     return 0
 
 
@@ -1077,7 +1077,8 @@ def main() -> int:
     p_uninstall.set_defaults(func=cmd_uninstall)
 
     args = parser.parse_args()
-    return args.func(args)
+    result: int = args.func(args)
+    return result
 
 
 if __name__ == "__main__":

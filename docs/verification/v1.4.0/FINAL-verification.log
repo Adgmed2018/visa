@@ -1,0 +1,85 @@
+==== PYTEST FINAL ====
+
+tests/test_visa.py::TestSkills::test_todos_agentes_existem PASSED        [  2%]
+tests/test_visa.py::TestSkills::test_todo_skill_tem_frontmatter PASSED   [  5%]
+tests/test_visa.py::TestSkills::test_frontmatter_tem_campos_obrigatorios PASSED [  7%]
+tests/test_visa.py::TestSkills::test_orquestrador_referencia_outros_agentes PASSED [ 10%]
+tests/test_visa.py::TestSkills::test_espelhamento_com_reversa_documentado PASSED [ 12%]
+tests/test_visa.py::TestSkills::test_escala_confianca_em_todos_agentes_relevantes PASSED [ 15%]
+tests/test_visa.py::TestInstall::test_install_cria_estrutura_basica PASSED [ 17%]
+tests/test_visa.py::TestInstall::test_install_copia_todos_os_agentes PASSED [ 20%]
+tests/test_visa.py::TestInstall::test_install_state_json_estruturado PASSED [ 22%]
+tests/test_visa.py::TestInstall::test_install_gera_manifest_sha256 PASSED [ 25%]
+tests/test_visa.py::TestInstall::test_install_idempotente PASSED         [ 27%]
+tests/test_visa.py::TestStatusValidate::test_status_sem_install_alerta PASSED [ 30%]
+tests/test_visa.py::TestStatusValidate::test_status_apos_install_mostra_estado PASSED [ 32%]
+tests/test_visa.py::TestStatusValidate::test_validate_detecta_artefatos_faltantes PASSED [ 35%]
+tests/test_visa.py::TestStatusValidate::test_validate_passa_com_artefatos_completos PASSED [ 37%]
+tests/test_visa.py::TestStatusValidate::test_validate_strict_rejeita_placeholder_sem_frontmatter PASSED [ 40%]
+tests/test_visa.py::TestStatusValidate::test_validate_strict_aceita_artefatos_canonicos_corretos PASSED [ 42%]
+tests/test_visa.py::TestBridge::test_bridge_cria_migration_stub_em_visa_sdd PASSED [ 45%]
+tests/test_visa.py::TestBridge::test_bridge_preserva_ids_canonicos PASSED [ 47%]
+tests/test_visa.py::TestBridge::test_bridge_rejeita_pipeline_incompleto PASSED [ 50%]
+tests/test_visa.py::TestBridge::test_bridge_alerta_mas_continua_se_so_alguns_canonicos PASSED [ 52%]
+tests/test_visa.py::TestBridge::test_bridge_sem_visa_sdd_falha_grácil PASSED [ 55%]
+tests/test_visa.py::TestCollectorGate::test_gate_bloqueia_quando_ha_lacuna_pendente PASSED [ 57%]
+tests/test_visa.py::TestCollectorGate::test_gate_aceita_lacuna_marcada_como_resolvido_no_heading PASSED [ 60%]
+tests/test_visa.py::TestCollectorGate::test_gate_aceita_lacuna_marcada_como_risco_aceito_no_heading PASSED [ 62%]
+tests/test_visa.py::TestCollectorGate::test_gate_aceita_via_frontmatter_accepted_risks PASSED [ 65%]
+tests/test_visa.py::TestCollectorGate::test_gate_override_via_accept_all_risks_com_motivo PASSED [ 67%]
+tests/test_visa.py::TestCollectorGate::test_gate_override_sem_motivo_emite_warning PASSED [ 70%]
+tests/test_visa.py::TestCollectorGate::test_gate_skip_completo PASSED    [ 72%]
+tests/test_visa.py::TestCollectorGate::test_gate_sem_gaps_md_nao_bloqueia PASSED [ 75%]
+tests/test_visa.py::TestCollectorGate::test_gate_inline_lacuna_sem_id_estruturado_bloqueia PASSED [ 77%]
+tests/test_visa.py::TestUninstall::test_uninstall_remove_skills_e_state PASSED [ 80%]
+tests/test_visa.py::TestUninstall::test_uninstall_preserva_visa_sdd_por_default PASSED [ 82%]
+tests/test_visa.py::TestUninstall::test_uninstall_purge_remove_visa_sdd PASSED [ 85%]
+tests/test_visa.py::TestUninstall::test_uninstall_sem_visa_instalada_e_idempotente PASSED [ 87%]
+tests/test_visa.py::TestReferences::test_orquestrador_step_01_existe PASSED [ 90%]
+tests/test_visa.py::TestReferences::test_orquestrador_step_02_existe PASSED [ 92%]
+tests/test_visa.py::TestReferences::test_orquestrador_checkpoint_guide_existe PASSED [ 95%]
+tests/test_visa.py::TestReferences::test_todas_pastas_references_tem_pelo_menos_readme PASSED [ 97%]
+tests/test_visa.py::TestEndToEndComParidadeGuard::test_ciclo_completo_extrai_clausulas_reais FAILED [100%]
+
+=================================== FAILURES ===================================
+___ TestEndToEndComParidadeGuard.test_ciclo_completo_extrai_clausulas_reais ____
+tests/test_visa.py:784: in test_ciclo_completo_extrai_clausulas_reais
+    raise SkipTest(
+E   test_visa.SkipTest: paridade-guard não está instalado neste ambiente — este teste valida a tese central da v1.1+ e DEVE rodar antes de qualquer release. Instale com: pip install paridade-guard>=0.3.0
+=========================== short test summary info ============================
+FAILED tests/test_visa.py::TestEndToEndComParidadeGuard::test_ciclo_completo_extrai_clausulas_reais - test_visa.SkipTest: paridade-guard não está instalado neste ambiente — este teste valida a tese central da v1.1+ e DEVE rodar antes de qualquer release. Instale com: pip install paridade-guard>=0.3.0
+========================= 1 failed, 39 passed in 3.28s =========================
+
+==== MYPY STRICT ====
+pyproject.toml: note: unused section(s): module = ['tests.*', 'visa_sdd.__init__']
+Success: no issues found in 4 source files
+
+==== RUFF ====
+All checks passed!
+
+==== COVERAGE ====
+tests/test_visa.py::TestReferences::test_todas_pastas_references_tem_pelo_menos_readme PASSED [ 97%]
+tests/test_visa.py::TestEndToEndComParidadeGuard::test_ciclo_completo_extrai_clausulas_reais FAILED [100%]/home/claude/visa-v1.4.0/.venv/lib/python3.12/site-packages/coverage/inorout.py:561: CoverageWarning: Module visa_sdd was never imported. (module-not-imported); see https://coverage.readthedocs.io/en/7.13.5/messages.html#warning-module-not-imported
+  self.warn(f"Module {pkg} was never imported.", slug="module-not-imported")
+/home/claude/visa-v1.4.0/.venv/lib/python3.12/site-packages/coverage/control.py:958: CoverageWarning: No data was collected. (no-data-collected); see https://coverage.readthedocs.io/en/7.13.5/messages.html#warning-no-data-collected
+  self._warn("No data was collected.", slug="no-data-collected")
+
+WARNING: Failed to generate report: No data to report.
+
+/home/claude/visa-v1.4.0/.venv/lib/python3.12/site-packages/pytest_cov/plugin.py:366: CovReportWarning: Failed to generate report: No data to report.
+
+  warnings.warn(CovReportWarning(message), stacklevel=1)
+
+ERROR: Coverage failure: total of 0 is less than fail-under=80
+
+
+=================================== FAILURES ===================================
+___ TestEndToEndComParidadeGuard.test_ciclo_completo_extrai_clausulas_reais ____
+tests/test_visa.py:784: in test_ciclo_completo_extrai_clausulas_reais
+    raise SkipTest(
+E   test_visa.SkipTest: paridade-guard não está instalado neste ambiente — este teste valida a tese central da v1.1+ e DEVE rodar antes de qualquer release. Instale com: pip install paridade-guard>=0.3.0
+================================ tests coverage ================================
+FAIL Required test coverage of 80.0% not reached. Total coverage: 0.00%
+=========================== short test summary info ============================
+FAILED tests/test_visa.py::TestEndToEndComParidadeGuard::test_ciclo_completo_extrai_clausulas_reais
+========================= 1 failed, 39 passed in 3.61s =========================

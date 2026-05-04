@@ -1,0 +1,8 @@
+ruff failed
+  Cause: Failed to parse /home/claude/visa-v1.4.0/pyproject.toml
+  Cause: TOML parse error at line 129, column 5
+    |
+129 |     "T40",   # deprecated
+    |     ^^^^^
+Unknown rule selector: `T40`
+

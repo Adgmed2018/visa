@@ -31,7 +31,6 @@ class SkipTest(Exception):
     falso positivo de cobertura que aconteceria se o teste retornasse
     como passed em ambiente sem o pré-requisito.
     """
-    pass
 
 
 def _run_visa(*args, cwd):
@@ -177,7 +176,7 @@ class TestInstall:
             _run_visa("install", cwd=tmp_root)
 
             state = json.loads((tmp_root / ".visa" / "state.json").read_text())
-            assert state["version"] == "1.3.0"
+            assert state["version"] == "1.4.0"
             assert state["phase"] is None
             assert state["discovery_level"] == "essencial"
             assert "claude-code" in state["engines"]
@@ -216,7 +215,7 @@ class TestInstall:
 
             # State não deveria ser sobrescrito
             state = json.loads((tmp_root / ".visa" / "state.json").read_text())
-            assert state["version"] == "1.3.0"
+            assert state["version"] == "1.4.0"
 
 
 # ============================================================================
@@ -239,7 +238,7 @@ class TestStatusValidate:
 
             r = _run_visa("status", cwd=tmp_root)
             assert r.returncode == 0
-            assert "1.3.0" in r.stdout
+            assert "1.4.0" in r.stdout
             assert "essencial" in r.stdout
 
     def test_validate_detecta_artefatos_faltantes(self):
@@ -940,7 +939,7 @@ if __name__ == "__main__":
     print(f"\n{'=' * 70}")
     print(f"PASSED: {total_p}    FAILED: {total_f}    SKIPPED: {total_s}")
     if all_skip_reasons:
-        print(f"\nSkipped tests (NÃO foram exercidos — não confunda com passed):")
+        print("\nSkipped tests (NÃO foram exercidos — não confunda com passed):")
         for reason in all_skip_reasons:
             print(f"  - {reason}")
     print(f"{'=' * 70}")

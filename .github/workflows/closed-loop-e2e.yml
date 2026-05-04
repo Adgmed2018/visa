@@ -1,0 +1,60 @@
+name: Closed Loop E2E
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  closed-loop-e2e:
+    name: Visa → paridade-guard E2E
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.10', '3.11', '3.12']
+        paridade-guard-version: ['0.3.0']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install visa-sdd (editable)
+        run: pip install -e ".[dev,test]"
+
+      - name: Install paridade-guard ${{ matrix.paridade-guard-version }}
+        run: |
+          pip install paridade-guard==${{ matrix.paridade-guard-version }} || \
+          echo "::warning::paridade-guard ${{ matrix.paridade-guard-version }} não disponível no PyPI ainda — teste e2e será skipped"
+
+      - name: Run pytest (with e2e)
+        run: pytest tests/ -v --tb=short
+
+      - name: Run mypy strict
+        run: mypy --strict src/visa_sdd/
+
+      - name: Run ruff
+        run: ruff check src/ tests/
+
+      - name: Run coverage
+        env:
+          COVERAGE_PROCESS_START: ${{ github.workspace }}/pyproject.toml
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          coverage run --rcfile=pyproject.toml -m pytest tests/
+          coverage combine
+          coverage report --fail-under=70
+
+      - name: Functional smoke test
+        run: |
+          mkdir /tmp/visa-smoke && cd /tmp/visa-smoke
+          touch CLAUDE.md
+          visa install
+          test "$(ls .claude/skills/ | wc -l)" -eq 14
+          visa status

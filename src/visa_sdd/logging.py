@@ -19,7 +19,6 @@ Uso:
 from __future__ import annotations
 
 import json
-import os
 import sys
 from datetime import datetime, timezone
 from enum import Enum
@@ -42,7 +41,7 @@ class LogLevel(Enum):
 # Configuração global
 _G_LOG_LEVEL = LogLevel.INFO
 _G_STRUCTURED = False  # JSON output quando True
-_G QUIET = False
+_G_QUIET = False
 
 
 def set_verbosity(level: int) -> None:
@@ -76,12 +75,12 @@ def _get_timestamp() -> str:
 def _format_message(level: LogLevel, logger_name: str, message: str, **extra: Any) -> str:
     """Formata mensagem de log."""
     timestamp = _get_timestamp()
-    
+
     if extra:
         extra_str = " | " + " | ".join(f"{k}={_format_value(v)}" for k, v in extra.items())
     else:
         extra_str = ""
-    
+
     return f"[{level.name:8}] {timestamp} | {logger_name:20} | {message}{extra_str}"
 
 
@@ -103,32 +102,32 @@ def _should_log(level: LogLevel) -> bool:
 
 class VisaLogger:
     """Logger estruturado para a Visa."""
-    
+
     def __init__(self, name: str) -> None:
         self.name = name
         self._extra: dict[str, Any] = {}
-    
+
     def _log(self, level: LogLevel, message: str, **extra: Any) -> None:
         """Log interno."""
         if _G_QUIET and level.value >= LogLevel.WARNING.value:
             # Em modo quieto, Warning+ ainda aparecem
             pass
-        
+
         if not _should_log(level):
             return
-        
+
         # Merge extra
         merged_extra = {**self._extra, **extra}
-        
+
         if _G_STRUCTURED:
             output = self._format_json(level, message, merged_extra)
         else:
             output = _format_message(level, self.name, message, **merged_extra)
-        
+
         # Output para stderr (não stdout, para não poluir output do CLI)
         sys.stderr.write(output + "\n")
         sys.stderr.flush()
-    
+
     def _format_json(self, level: LogLevel, message: str, extra: dict[str, Any]) -> str:
         """Formata output JSON estruturado."""
         record = {
@@ -139,32 +138,32 @@ class VisaLogger:
             **extra
         }
         return json.dumps(record, ensure_ascii=False)
-    
+
     def debug(self, message: str, **extra: Any) -> None:
         """Log debug."""
         self._log(LogLevel.DEBUG, message, **extra)
-    
+
     def info(self, message: str, **extra: Any) -> None:
         """Log info."""
         self._log(LogLevel.INFO, message, **extra)
-    
+
     def warning(self, message: str, **extra: Any) -> None:
         """Log warning."""
         self._log(LogLevel.WARNING, message, **extra)
-    
+
     def warn(self, message: str, **extra: Any) -> None:
         """Alias para warning."""
         self.warning(message, **extra)
-    
+
     def error(self, message: str, **extra: Any) -> None:
         """Log error."""
         self._log(LogLevel.ERROR, message, **extra)
-    
+
     def critical(self, message: str, **extra: Any) -> None:
         """Log critical."""
         self._log(LogLevel.CRITICAL, message, **extra)
-    
-    def with_extra(self, **extra: Any) -> "VisaLogger":
+
+    def with_extra(self, **extra: Any) -> VisaLogger:
         """Retorna novo logger com extra fields."""
         new_logger = VisaLogger(self.name)
         new_logger._extra = {**self._extra, **extra}
@@ -188,20 +187,20 @@ def get_logger(name: str) -> VisaLogger:
 
 class VisaError(Exception):
     """Erro base da Visa."""
-    
+
     code: str = "ERR_VISA"
-    
+
     def __init__(self, message: str, **extra: Any) -> None:
         super().__init__(message)
         self.message = message
         self.extra = extra
         self._log()
-    
+
     def _log(self) -> None:
         """Log o erro."""
         logger = get_logger("visa.error")
         logger.error(self.message, code=self.code, **self.extra)
-    
+
     def to_dict(self) -> dict[str, Any]:
         """Converte para dict (para output estruturado)."""
         return {
@@ -214,37 +213,37 @@ class VisaError(Exception):
 
 class VisaNotInstalledError(VisaError):
     """Visa não está instalada no projeto."""
-    
+
     code = "ERR_NOT_INSTALLED"
 
 
 class VisaArtifactNotFoundError(VisaError):
     """Artefato não encontrado."""
-    
+
     code = "ERR_ARTIFACT_NOT_FOUND"
 
 
 class VisaValidationError(VisaError):
     """Erro de validação de artefato."""
-    
+
     code = "ERR_VALIDATION"
 
 
 class VisaCollectorGateError(VisaError):
     """Gate do coletor bloqueou o pipeline."""
-    
+
     code = "ERR_COLLECTOR_GATE"
 
 
 class VisaBridgeError(VisaError):
     """Erro durante o bridge."""
-    
+
     code = "ERR_BRIDGE"
 
 
 class VisaSymlinkError(VisaError):
     """Erro ao criar symlink."""
-    
+
     code = "ERR_SYMLINK"
 
 
@@ -256,52 +255,52 @@ def progress(current: int, total: int, message: str = "") -> None:
     """Output de progresso para operações longas."""
     if _G_QUIET:
         return
-    
+
     percent = (current / total * 100) if total > 0 else 0
     bar = "█" * int(percent / 5) + "░" * (20 - int(percent / 5))
-    
+
     sys.stderr.write(f"\r[{bar}] {percent:3.0f}% | {message}    ")
     sys.stderr.flush()
-    
+
     if current >= total:
         sys.stderr.write("\n")
         sys.stderr.flush()
 
 
-def spinner(message: str = "") -> "Spinner":
+def spinner(message: str = "") -> Spinner:
     """Retorna um spinner para animations."""
     return Spinner(message)
 
 
 class Spinner:
     """Spinner animado simples."""
-    
+
     def __init__(self, message: str = "") -> None:
         self.message = message
         self._running = False
         self._frames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"]
         self._index = 0
-    
+
     def start(self) -> None:
         """Inicia o spinner."""
         self._running = True
         self._update()
-    
+
     def stop(self) -> None:
         """Para o spinner."""
         self._running = False
         sys.stderr.write("\r" + " " * (len(self.message) + 20) + "\r")
         sys.stderr.flush()
-    
+
     def _update(self) -> None:
         """Atualiza o spinner."""
         if not self._running:
             return
-        
+
         frame = self._frames[self._index % len(self._frames)]
         sys.stderr.write(f"\r{frame} {self.message}")
         sys.stderr.flush()
-        
+
         self._index += 1
 
 
@@ -321,25 +320,25 @@ def box_draw(title: str, lines: list[str], width: int = 64) -> str:
         String formatada com box
     """
     output: list[str] = []
-    
+
     # Corner
     output.append("┌" + "─" * (width - 2) + "┐")
-    
+
     # Title
     if title:
         title_line = f"│  {title.center(width - 4)}  │"
         output.append(title_line)
         output.append("├" + "─" * (width - 2) + "┤")
-    
+
     # Content
     for line in lines:
         if len(line) > width - 4:
             line = line[:width - 7] + "..."
         output.append(f"│  {line.ljust(width - 4)}  │")
-    
+
     # Bottom
     output.append("└" + "─" * (width - 2) + "┘")
-    
+
     return "\n".join(output)
 
 

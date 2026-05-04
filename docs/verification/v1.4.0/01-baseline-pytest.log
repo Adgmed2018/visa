@@ -1,0 +1,410 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.0.3, pluggy-1.6.0 -- /home/claude/visa-v1.4.0/.venv/bin/python3
+cachedir: .pytest_cache
+hypothesis profile 'default'
+rootdir: /home/claude/visa-v1.4.0
+configfile: pyproject.toml
+testpaths: tests
+plugins: hypothesis-6.152.4, xdist-3.8.0, mock-3.15.1, cov-7.1.0
+collecting ... collected 40 items
+
+tests/test_visa.py::TestSkills::test_todos_agentes_existem PASSED        [  2%]
+tests/test_visa.py::TestSkills::test_todo_skill_tem_frontmatter PASSED   [  5%]
+tests/test_visa.py::TestSkills::test_frontmatter_tem_campos_obrigatorios PASSED [  7%]
+tests/test_visa.py::TestSkills::test_orquestrador_referencia_outros_agentes PASSED [ 10%]
+tests/test_visa.py::TestSkills::test_espelhamento_com_reversa_documentado PASSED [ 12%]
+tests/test_visa.py::TestSkills::test_escala_confianca_em_todos_agentes_relevantes PASSED [ 15%]
+tests/test_visa.py::TestInstall::test_install_cria_estrutura_basica FAILED [ 17%]
+tests/test_visa.py::TestInstall::test_install_copia_todos_os_agentes FAILED [ 20%]
+tests/test_visa.py::TestInstall::test_install_state_json_estruturado FAILED [ 22%]
+tests/test_visa.py::TestInstall::test_install_gera_manifest_sha256 FAILED [ 25%]
+tests/test_visa.py::TestInstall::test_install_idempotente FAILED         [ 27%]
+tests/test_visa.py::TestStatusValidate::test_status_sem_install_alerta FAILED [ 30%]
+tests/test_visa.py::TestStatusValidate::test_status_apos_install_mostra_estado FAILED [ 32%]
+tests/test_visa.py::TestStatusValidate::test_validate_detecta_artefatos_faltantes FAILED [ 35%]
+tests/test_visa.py::TestStatusValidate::test_validate_passa_com_artefatos_completos FAILED [ 37%]
+tests/test_visa.py::TestStatusValidate::test_validate_strict_rejeita_placeholder_sem_frontmatter FAILED [ 40%]
+tests/test_visa.py::TestStatusValidate::test_validate_strict_aceita_artefatos_canonicos_corretos FAILED [ 42%]
+tests/test_visa.py::TestBridge::test_bridge_cria_migration_stub_em_visa_sdd FAILED [ 45%]
+tests/test_visa.py::TestBridge::test_bridge_preserva_ids_canonicos FAILED [ 47%]
+tests/test_visa.py::TestBridge::test_bridge_rejeita_pipeline_incompleto FAILED [ 50%]
+tests/test_visa.py::TestBridge::test_bridge_alerta_mas_continua_se_so_alguns_canonicos FAILED [ 52%]
+tests/test_visa.py::TestBridge::test_bridge_sem_visa_sdd_falha_grácil FAILED [ 55%]
+tests/test_visa.py::TestCollectorGate::test_gate_bloqueia_quando_ha_lacuna_pendente FAILED [ 57%]
+tests/test_visa.py::TestCollectorGate::test_gate_aceita_lacuna_marcada_como_resolvido_no_heading FAILED [ 60%]
+tests/test_visa.py::TestCollectorGate::test_gate_aceita_lacuna_marcada_como_risco_aceito_no_heading FAILED [ 62%]
+tests/test_visa.py::TestCollectorGate::test_gate_aceita_via_frontmatter_accepted_risks FAILED [ 65%]
+tests/test_visa.py::TestCollectorGate::test_gate_override_via_accept_all_risks_com_motivo FAILED [ 67%]
+tests/test_visa.py::TestCollectorGate::test_gate_override_sem_motivo_emite_warning FAILED [ 70%]
+tests/test_visa.py::TestCollectorGate::test_gate_skip_completo FAILED    [ 72%]
+tests/test_visa.py::TestCollectorGate::test_gate_sem_gaps_md_nao_bloqueia FAILED [ 75%]
+tests/test_visa.py::TestCollectorGate::test_gate_inline_lacuna_sem_id_estruturado_bloqueia FAILED [ 77%]
+tests/test_visa.py::TestUninstall::test_uninstall_remove_skills_e_state FAILED [ 80%]
+tests/test_visa.py::TestUninstall::test_uninstall_preserva_visa_sdd_por_default FAILED [ 82%]
+tests/test_visa.py::TestUninstall::test_uninstall_purge_remove_visa_sdd FAILED [ 85%]
+tests/test_visa.py::TestUninstall::test_uninstall_sem_visa_instalada_e_idempotente FAILED [ 87%]
+tests/test_visa.py::TestReferences::test_orquestrador_step_01_existe PASSED [ 90%]
+tests/test_visa.py::TestReferences::test_orquestrador_step_02_existe PASSED [ 92%]
+tests/test_visa.py::TestReferences::test_orquestrador_checkpoint_guide_existe PASSED [ 95%]
+tests/test_visa.py::TestReferences::test_todas_pastas_references_tem_pelo_menos_readme PASSED [ 97%]
+tests/test_visa.py::TestEndToEndComParidadeGuard::test_ciclo_completo_extrai_clausulas_reais FAILED [100%]
+
+=================================== FAILURES ===================================
+________________ TestInstall.test_install_cria_estrutura_basica ________________
+tests/test_visa.py:153: in test_install_cria_estrutura_basica
+    assert r.returncode == 0, f"install falhou:\n{r.stdout}\n{r.stderr}"
+E   AssertionError: install falhou:
+E     
+E     Traceback (most recent call last):
+E       File "/home/claude/visa-v1.4.0/bin/visa", line 17, in <module>
+E         from visa_sdd.cli import main
+E       File "/home/claude/visa-v1.4.0/src/visa_sdd/__init__.py", line 39, in <module>
+E         from .logging import (
+E       File "/home/claude/visa-v1.4.0/src/visa_sdd/logging.py", line 45
+E         _G QUIET = False
+E            ^^^^^
+E     SyntaxError: invalid syntax
+E     
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/home/claude/visa-v1.4.0/.venv/bin/python3', '/home/claude/visa-v1.4.0/bin/visa', '--project-root', '/tmp/tmp0a0lswhu', 'install'], returncode=1, stdout='', stderr='Traceback (most recent call last):\n  File "/home/claude/visa-v1.4.0/bin/visa", line 17, in <module>\n    from visa_sdd.cli import main\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/__init__.py", line 39, in <module>\n    from .logging import (\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/logging.py", line 45\n    _G QUIET = False\n       ^^^^^\nSyntaxError: invalid syntax\n').returncode
+_______________ TestInstall.test_install_copia_todos_os_agentes ________________
+tests/test_visa.py:170: in test_install_copia_todos_os_agentes
+    assert (skills_dir / agent / "SKILL.md").exists(), \
+E   AssertionError: visa não foi copiado
+E   assert False
+E    +  where False = exists()
+E    +    where exists = ((PosixPath('/tmp/tmpgnpzykwx/.claude/skills') / 'visa') / 'SKILL.md').exists
+_______________ TestInstall.test_install_state_json_estruturado ________________
+tests/test_visa.py:179: in test_install_state_json_estruturado
+    state = json.loads((tmp_root / ".visa" / "state.json").read_text())
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1015: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmph9uljjv0/.visa/state.json'
+________________ TestInstall.test_install_gera_manifest_sha256 _________________
+tests/test_visa.py:194: in test_install_gera_manifest_sha256
+    assert manifest_path.exists()
+E   AssertionError: assert False
+E    +  where False = exists()
+E    +    where exists = PosixPath('/tmp/tmptofrxxei/.visa/_config/files-manifest.json').exists
+_____________________ TestInstall.test_install_idempotente _____________________
+tests/test_visa.py:212: in test_install_idempotente
+    assert r1.returncode == 0
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/home/claude/visa-v1.4.0/.venv/bin/python3', '/home/claude/visa-v1.4.0/bin/visa', '--project-root', '/tmp/tmp277gud17', 'install'], returncode=1, stdout='', stderr='Traceback (most recent call last):\n  File "/home/claude/visa-v1.4.0/bin/visa", line 17, in <module>\n    from visa_sdd.cli import main\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/__init__.py", line 39, in <module>\n    from .logging import (\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/logging.py", line 45\n    _G QUIET = False\n       ^^^^^\nSyntaxError: invalid syntax\n').returncode
+______________ TestStatusValidate.test_status_sem_install_alerta _______________
+tests/test_visa.py:232: in test_status_sem_install_alerta
+    assert "não instalada" in r.stdout
+E   assert 'n\xe3o instalada' in ''
+E    +  where '' = CompletedProcess(args=['/home/claude/visa-v1.4.0/.venv/bin/python3', '/home/claude/visa-v1.4.0/bin/visa', '--project-root', '/tmp/tmphscw0ac9', 'status'], returncode=1, stdout='', stderr='Traceback (most recent call last):\n  File "/home/claude/visa-v1.4.0/bin/visa", line 17, in <module>\n    from visa_sdd.cli import main\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/__init__.py", line 39, in <module>\n    from .logging import (\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/logging.py", line 45\n    _G QUIET = False\n       ^^^^^\nSyntaxError: invalid syntax\n').stdout
+__________ TestStatusValidate.test_status_apos_install_mostra_estado ___________
+tests/test_visa.py:241: in test_status_apos_install_mostra_estado
+    assert r.returncode == 0
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/home/claude/visa-v1.4.0/.venv/bin/python3', '/home/claude/visa-v1.4.0/bin/visa', '--project-root', '/tmp/tmpz3yibavq', 'status'], returncode=1, stdout='', stderr='Traceback (most recent call last):\n  File "/home/claude/visa-v1.4.0/bin/visa", line 17, in <module>\n    from visa_sdd.cli import main\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/__init__.py", line 39, in <module>\n    from .logging import (\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/logging.py", line 45\n    _G QUIET = False\n       ^^^^^\nSyntaxError: invalid syntax\n').returncode
+_________ TestStatusValidate.test_validate_detecta_artefatos_faltantes _________
+tests/test_visa.py:254: in test_validate_detecta_artefatos_faltantes
+    assert r.returncode == 2  # missing required
+    ^^^^^^^^^^^^^^^^^^^^^^^^
+E   assert 1 == 2
+E    +  where 1 = CompletedProcess(args=['/home/claude/visa-v1.4.0/.venv/bin/python3', '/home/claude/visa-v1.4.0/bin/visa', '--project-root', '/tmp/tmp8pj0xd74', 'validate'], returncode=1, stdout='', stderr='Traceback (most recent call last):\n  File "/home/claude/visa-v1.4.0/bin/visa", line 17, in <module>\n    from visa_sdd.cli import main\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/__init__.py", line 39, in <module>\n    from .logging import (\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/logging.py", line 45\n    _G QUIET = False\n       ^^^^^\nSyntaxError: invalid syntax\n').returncode
+________ TestStatusValidate.test_validate_passa_com_artefatos_completos ________
+tests/test_visa.py:274: in test_validate_passa_com_artefatos_completos
+    (visa_sdd / name).write_text(f"# {name}\nplaceholder")
+/usr/lib/python3.12/pathlib.py:1049: in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1015: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmpeqmah7rf/_visa_sdd/landscape.md'
+_ TestStatusValidate.test_validate_strict_rejeita_placeholder_sem_frontmatter __
+tests/test_visa.py:295: in test_validate_strict_rejeita_placeholder_sem_frontmatter
+    (visa_sdd / name).write_text(f"# {name}\nplaceholder")
+/usr/lib/python3.12/pathlib.py:1049: in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1015: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmpe_ucb8aa/_visa_sdd/landscape.md'
+_ TestStatusValidate.test_validate_strict_aceita_artefatos_canonicos_corretos __
+tests/test_visa.py:320: in test_validate_strict_aceita_artefatos_canonicos_corretos
+    (visa_sdd / name).write_text(f"# {name}")
+/usr/lib/python3.12/pathlib.py:1049: in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1015: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmp7kgmrla2/_visa_sdd/landscape.md'
+____________ TestBridge.test_bridge_cria_migration_stub_em_visa_sdd ____________
+tests/test_visa.py:460: in test_bridge_cria_migration_stub_em_visa_sdd
+    assert r.returncode == 0, f"bridge falhou:\n{r.stdout}\n{r.stderr}"
+E   AssertionError: bridge falhou:
+E     
+E     Traceback (most recent call last):
+E       File "/home/claude/visa-v1.4.0/bin/visa", line 17, in <module>
+E         from visa_sdd.cli import main
+E       File "/home/claude/visa-v1.4.0/src/visa_sdd/__init__.py", line 39, in <module>
+E         from .logging import (
+E       File "/home/claude/visa-v1.4.0/src/visa_sdd/logging.py", line 45
+E         _G QUIET = False
+E            ^^^^^
+E     SyntaxError: invalid syntax
+E     
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/home/claude/visa-v1.4.0/.venv/bin/python3', '/home/claude/visa-v1.4.0/bin/visa', '--project-root', '/tmp/tmp9ivm4_95', 'bridge'], returncode=1, stdout='', stderr='Traceback (most recent call last):\n  File "/home/claude/visa-v1.4.0/bin/visa", line 17, in <module>\n    from visa_sdd.cli import main\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/__init__.py", line 39, in <module>\n    from .logging import (\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/logging.py", line 45\n    _G QUIET = False\n       ^^^^^\nSyntaxError: invalid syntax\n').returncode
+________________ TestBridge.test_bridge_preserva_ids_canonicos _________________
+tests/test_visa.py:476: in test_bridge_preserva_ids_canonicos
+    content = stub_business.read_text(encoding="utf-8")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1029: in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1015: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmpivy68lb0/_visa_sdd/migration/target_business_rules.md'
+______________ TestBridge.test_bridge_rejeita_pipeline_incompleto ______________
+tests/test_visa.py:491: in test_bridge_rejeita_pipeline_incompleto
+    assert r.returncode == 2, f"esperado returncode 2, foi {r.returncode}"
+E   AssertionError: esperado returncode 2, foi 1
+E   assert 1 == 2
+E    +  where 1 = CompletedProcess(args=['/home/claude/visa-v1.4.0/.venv/bin/python3', '/home/claude/visa-v1.4.0/bin/visa', '--project-root', '/tmp/tmpnhmb8gds', 'bridge'], returncode=1, stdout='', stderr='Traceback (most recent call last):\n  File "/home/claude/visa-v1.4.0/bin/visa", line 17, in <module>\n    from visa_sdd.cli import main\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/__init__.py", line 39, in <module>\n    from .logging import (\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/logging.py", line 45\n    _G QUIET = False\n       ^^^^^\nSyntaxError: invalid syntax\n').returncode
+______ TestBridge.test_bridge_alerta_mas_continua_se_so_alguns_canonicos _______
+tests/test_visa.py:508: in test_bridge_alerta_mas_continua_se_so_alguns_canonicos
+    assert r.returncode == 0, f"bridge deveria seguir:\n{r.stdout}"
+E   AssertionError: bridge deveria seguir:
+E     
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/home/claude/visa-v1.4.0/.venv/bin/python3', '/home/claude/visa-v1.4.0/bin/visa', '--project-root', '/tmp/tmpc8srg4d_', 'bridge'], returncode=1, stdout='', stderr='Traceback (most recent call last):\n  File "/home/claude/visa-v1.4.0/bin/visa", line 17, in <module>\n    from visa_sdd.cli import main\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/__init__.py", line 39, in <module>\n    from .logging import (\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/logging.py", line 45\n    _G QUIET = False\n       ^^^^^\nSyntaxError: invalid syntax\n').returncode
+_______________ TestBridge.test_bridge_sem_visa_sdd_falha_grácil _______________
+tests/test_visa.py:515: in test_bridge_sem_visa_sdd_falha_grácil
+    assert "não existe" in r.stdout
+E   assert 'n\xe3o existe' in ''
+E    +  where '' = CompletedProcess(args=['/home/claude/visa-v1.4.0/.venv/bin/python3', '/home/claude/visa-v1.4.0/bin/visa', '--project-root', '/tmp/tmpzpxi4m04', 'bridge'], returncode=1, stdout='', stderr='Traceback (most recent call last):\n  File "/home/claude/visa-v1.4.0/bin/visa", line 17, in <module>\n    from visa_sdd.cli import main\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/__init__.py", line 39, in <module>\n    from .logging import (\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/logging.py", line 45\n    _G QUIET = False\n       ^^^^^\nSyntaxError: invalid syntax\n').stdout
+________ TestCollectorGate.test_gate_bloqueia_quando_ha_lacuna_pendente ________
+tests/test_visa.py:554: in test_gate_bloqueia_quando_ha_lacuna_pendente
+    self._setup(tmp_root)
+tests/test_visa.py:548: in _setup
+    (tmp_root / "_visa_sdd" / "business_model.md").write_text(
+/usr/lib/python3.12/pathlib.py:1049: in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1015: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmpzg2k49hl/_visa_sdd/business_model.md'
+_ TestCollectorGate.test_gate_aceita_lacuna_marcada_como_resolvido_no_heading __
+tests/test_visa.py:568: in test_gate_aceita_lacuna_marcada_como_resolvido_no_heading
+    self._setup(tmp_root)
+tests/test_visa.py:548: in _setup
+    (tmp_root / "_visa_sdd" / "business_model.md").write_text(
+/usr/lib/python3.12/pathlib.py:1049: in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1015: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmp050nj1k_/_visa_sdd/business_model.md'
+_ TestCollectorGate.test_gate_aceita_lacuna_marcada_como_risco_aceito_no_heading _
+tests/test_visa.py:584: in test_gate_aceita_lacuna_marcada_como_risco_aceito_no_heading
+    self._setup(tmp_root)
+tests/test_visa.py:548: in _setup
+    (tmp_root / "_visa_sdd" / "business_model.md").write_text(
+/usr/lib/python3.12/pathlib.py:1049: in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1015: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmp88w1zzw4/_visa_sdd/business_model.md'
+______ TestCollectorGate.test_gate_aceita_via_frontmatter_accepted_risks _______
+tests/test_visa.py:599: in test_gate_aceita_via_frontmatter_accepted_risks
+    self._setup(tmp_root)
+tests/test_visa.py:548: in _setup
+    (tmp_root / "_visa_sdd" / "business_model.md").write_text(
+/usr/lib/python3.12/pathlib.py:1049: in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1015: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmp_vlefomb/_visa_sdd/business_model.md'
+_____ TestCollectorGate.test_gate_override_via_accept_all_risks_com_motivo _____
+tests/test_visa.py:615: in test_gate_override_via_accept_all_risks_com_motivo
+    self._setup(tmp_root)
+tests/test_visa.py:548: in _setup
+    (tmp_root / "_visa_sdd" / "business_model.md").write_text(
+/usr/lib/python3.12/pathlib.py:1049: in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1015: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmpfjjk6zp0/_visa_sdd/business_model.md'
+________ TestCollectorGate.test_gate_override_sem_motivo_emite_warning _________
+tests/test_visa.py:631: in test_gate_override_sem_motivo_emite_warning
+    self._setup(tmp_root)
+tests/test_visa.py:548: in _setup
+    (tmp_root / "_visa_sdd" / "business_model.md").write_text(
+/usr/lib/python3.12/pathlib.py:1049: in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1015: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmpxyp60ho1/_visa_sdd/business_model.md'
+__________________ TestCollectorGate.test_gate_skip_completo ___________________
+tests/test_visa.py:644: in test_gate_skip_completo
+    self._setup(tmp_root)
+tests/test_visa.py:548: in _setup
+    (tmp_root / "_visa_sdd" / "business_model.md").write_text(
+/usr/lib/python3.12/pathlib.py:1049: in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1015: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmpfut3cc0v/_visa_sdd/business_model.md'
+_____________ TestCollectorGate.test_gate_sem_gaps_md_nao_bloqueia _____________
+tests/test_visa.py:656: in test_gate_sem_gaps_md_nao_bloqueia
+    self._setup(tmp_root)
+tests/test_visa.py:548: in _setup
+    (tmp_root / "_visa_sdd" / "business_model.md").write_text(
+/usr/lib/python3.12/pathlib.py:1049: in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1015: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmpy9dbz1uj/_visa_sdd/business_model.md'
+____ TestCollectorGate.test_gate_inline_lacuna_sem_id_estruturado_bloqueia _____
+tests/test_visa.py:666: in test_gate_inline_lacuna_sem_id_estruturado_bloqueia
+    self._setup(tmp_root)
+tests/test_visa.py:548: in _setup
+    (tmp_root / "_visa_sdd" / "business_model.md").write_text(
+/usr/lib/python3.12/pathlib.py:1049: in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1015: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmp4xoduwsh/_visa_sdd/business_model.md'
+______________ TestUninstall.test_uninstall_remove_skills_e_state ______________
+tests/test_visa.py:688: in test_uninstall_remove_skills_e_state
+    assert (tmp_root / ".visa").exists()
+E   AssertionError: assert False
+E    +  where False = exists()
+E    +    where exists = (PosixPath('/tmp/tmpbpab9ofh') / '.visa').exists
+__________ TestUninstall.test_uninstall_preserva_visa_sdd_por_default __________
+tests/test_visa.py:706: in test_uninstall_preserva_visa_sdd_por_default
+    (tmp_root / "_visa_sdd" / "user-content.md").write_text("conteúdo do usuário")
+/usr/lib/python3.12/pathlib.py:1049: in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1015: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmp3cbixzow/_visa_sdd/user-content.md'
+______________ TestUninstall.test_uninstall_purge_remove_visa_sdd ______________
+tests/test_visa.py:718: in test_uninstall_purge_remove_visa_sdd
+    (tmp_root / "_visa_sdd" / "x.md").write_text("x")
+/usr/lib/python3.12/pathlib.py:1049: in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/pathlib.py:1015: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmpv1k1ek4p/_visa_sdd/x.md'
+________ TestUninstall.test_uninstall_sem_visa_instalada_e_idempotente _________
+tests/test_visa.py:729: in test_uninstall_sem_visa_instalada_e_idempotente
+    assert r.returncode == 0  # não falha se já não estava instalada
+    ^^^^^^^^^^^^^^^^^^^^^^^^
+E   assert 1 == 0
+E    +  where 1 = CompletedProcess(args=['/home/claude/visa-v1.4.0/.venv/bin/python3', '/home/claude/visa-v1.4.0/bin/visa', '--project-root', '/tmp/tmpntqdu9ar', 'uninstall', '--yes'], returncode=1, stdout='', stderr='Traceback (most recent call last):\n  File "/home/claude/visa-v1.4.0/bin/visa", line 17, in <module>\n    from visa_sdd.cli import main\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/__init__.py", line 39, in <module>\n    from .logging import (\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/logging.py", line 45\n    _G QUIET = False\n       ^^^^^\nSyntaxError: invalid syntax\n').returncode
+___ TestEndToEndComParidadeGuard.test_ciclo_completo_extrai_clausulas_reais ____
+tests/test_visa.py:785: in test_ciclo_completo_extrai_clausulas_reais
+    raise SkipTest(
+E   test_visa.SkipTest: paridade-guard não está instalado neste ambiente — este teste valida a tese central da v1.1+ e DEVE rodar antes de qualquer release. Instale com: pip install paridade-guard>=0.3.0
+=========================== short test summary info ============================
+FAILED tests/test_visa.py::TestInstall::test_install_cria_estrutura_basica - AssertionError: install falhou:
+  
+  Traceback (most recent call last):
+    File "/home/claude/visa-v1.4.0/bin/visa", line 17, in <module>
+      from visa_sdd.cli import main
+    File "/home/claude/visa-v1.4.0/src/visa_sdd/__init__.py", line 39, in <module>
+      from .logging import (
+    File "/home/claude/visa-v1.4.0/src/visa_sdd/logging.py", line 45
+      _G QUIET = False
+         ^^^^^
+  SyntaxError: invalid syntax
+  
+assert 1 == 0
+ +  where 1 = CompletedProcess(args=['/home/claude/visa-v1.4.0/.venv/bin/python3', '/home/claude/visa-v1.4.0/bin/visa', '--project-root', '/tmp/tmp0a0lswhu', 'install'], returncode=1, stdout='', stderr='Traceback (most recent call last):\n  File "/home/claude/visa-v1.4.0/bin/visa", line 17, in <module>\n    from visa_sdd.cli import main\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/__init__.py", line 39, in <module>\n    from .logging import (\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/logging.py", line 45\n    _G QUIET = False\n       ^^^^^\nSyntaxError: invalid syntax\n').returncode
+FAILED tests/test_visa.py::TestInstall::test_install_copia_todos_os_agentes - AssertionError: visa não foi copiado
+assert False
+ +  where False = exists()
+ +    where exists = ((PosixPath('/tmp/tmpgnpzykwx/.claude/skills') / 'visa') / 'SKILL.md').exists
+FAILED tests/test_visa.py::TestInstall::test_install_state_json_estruturado - FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmph9uljjv0/.visa/state.json'
+FAILED tests/test_visa.py::TestInstall::test_install_gera_manifest_sha256 - AssertionError: assert False
+ +  where False = exists()
+ +    where exists = PosixPath('/tmp/tmptofrxxei/.visa/_config/files-manifest.json').exists
+FAILED tests/test_visa.py::TestInstall::test_install_idempotente - assert 1 == 0
+ +  where 1 = CompletedProcess(args=['/home/claude/visa-v1.4.0/.venv/bin/python3', '/home/claude/visa-v1.4.0/bin/visa', '--project-root', '/tmp/tmp277gud17', 'install'], returncode=1, stdout='', stderr='Traceback (most recent call last):\n  File "/home/claude/visa-v1.4.0/bin/visa", line 17, in <module>\n    from visa_sdd.cli import main\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/__init__.py", line 39, in <module>\n    from .logging import (\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/logging.py", line 45\n    _G QUIET = False\n       ^^^^^\nSyntaxError: invalid syntax\n').returncode
+FAILED tests/test_visa.py::TestStatusValidate::test_status_sem_install_alerta - assert 'n\xe3o instalada' in ''
+ +  where '' = CompletedProcess(args=['/home/claude/visa-v1.4.0/.venv/bin/python3', '/home/claude/visa-v1.4.0/bin/visa', '--project-root', '/tmp/tmphscw0ac9', 'status'], returncode=1, stdout='', stderr='Traceback (most recent call last):\n  File "/home/claude/visa-v1.4.0/bin/visa", line 17, in <module>\n    from visa_sdd.cli import main\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/__init__.py", line 39, in <module>\n    from .logging import (\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/logging.py", line 45\n    _G QUIET = False\n       ^^^^^\nSyntaxError: invalid syntax\n').stdout
+FAILED tests/test_visa.py::TestStatusValidate::test_status_apos_install_mostra_estado - assert 1 == 0
+ +  where 1 = CompletedProcess(args=['/home/claude/visa-v1.4.0/.venv/bin/python3', '/home/claude/visa-v1.4.0/bin/visa', '--project-root', '/tmp/tmpz3yibavq', 'status'], returncode=1, stdout='', stderr='Traceback (most recent call last):\n  File "/home/claude/visa-v1.4.0/bin/visa", line 17, in <module>\n    from visa_sdd.cli import main\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/__init__.py", line 39, in <module>\n    from .logging import (\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/logging.py", line 45\n    _G QUIET = False\n       ^^^^^\nSyntaxError: invalid syntax\n').returncode
+FAILED tests/test_visa.py::TestStatusValidate::test_validate_detecta_artefatos_faltantes - assert 1 == 2
+ +  where 1 = CompletedProcess(args=['/home/claude/visa-v1.4.0/.venv/bin/python3', '/home/claude/visa-v1.4.0/bin/visa', '--project-root', '/tmp/tmp8pj0xd74', 'validate'], returncode=1, stdout='', stderr='Traceback (most recent call last):\n  File "/home/claude/visa-v1.4.0/bin/visa", line 17, in <module>\n    from visa_sdd.cli import main\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/__init__.py", line 39, in <module>\n    from .logging import (\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/logging.py", line 45\n    _G QUIET = False\n       ^^^^^\nSyntaxError: invalid syntax\n').returncode
+FAILED tests/test_visa.py::TestStatusValidate::test_validate_passa_com_artefatos_completos - FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmpeqmah7rf/_visa_sdd/landscape.md'
+FAILED tests/test_visa.py::TestStatusValidate::test_validate_strict_rejeita_placeholder_sem_frontmatter - FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmpe_ucb8aa/_visa_sdd/landscape.md'
+FAILED tests/test_visa.py::TestStatusValidate::test_validate_strict_aceita_artefatos_canonicos_corretos - FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmp7kgmrla2/_visa_sdd/landscape.md'
+FAILED tests/test_visa.py::TestBridge::test_bridge_cria_migration_stub_em_visa_sdd - AssertionError: bridge falhou:
+  
+  Traceback (most recent call last):
+    File "/home/claude/visa-v1.4.0/bin/visa", line 17, in <module>
+      from visa_sdd.cli import main
+    File "/home/claude/visa-v1.4.0/src/visa_sdd/__init__.py", line 39, in <module>
+      from .logging import (
+    File "/home/claude/visa-v1.4.0/src/visa_sdd/logging.py", line 45
+      _G QUIET = False
+         ^^^^^
+  SyntaxError: invalid syntax
+  
+assert 1 == 0
+ +  where 1 = CompletedProcess(args=['/home/claude/visa-v1.4.0/.venv/bin/python3', '/home/claude/visa-v1.4.0/bin/visa', '--project-root', '/tmp/tmp9ivm4_95', 'bridge'], returncode=1, stdout='', stderr='Traceback (most recent call last):\n  File "/home/claude/visa-v1.4.0/bin/visa", line 17, in <module>\n    from visa_sdd.cli import main\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/__init__.py", line 39, in <module>\n    from .logging import (\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/logging.py", line 45\n    _G QUIET = False\n       ^^^^^\nSyntaxError: invalid syntax\n').returncode
+FAILED tests/test_visa.py::TestBridge::test_bridge_preserva_ids_canonicos - FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmpivy68lb0/_visa_sdd/migration/target_business_rules.md'
+FAILED tests/test_visa.py::TestBridge::test_bridge_rejeita_pipeline_incompleto - AssertionError: esperado returncode 2, foi 1
+assert 1 == 2
+ +  where 1 = CompletedProcess(args=['/home/claude/visa-v1.4.0/.venv/bin/python3', '/home/claude/visa-v1.4.0/bin/visa', '--project-root', '/tmp/tmpnhmb8gds', 'bridge'], returncode=1, stdout='', stderr='Traceback (most recent call last):\n  File "/home/claude/visa-v1.4.0/bin/visa", line 17, in <module>\n    from visa_sdd.cli import main\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/__init__.py", line 39, in <module>\n    from .logging import (\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/logging.py", line 45\n    _G QUIET = False\n       ^^^^^\nSyntaxError: invalid syntax\n').returncode
+FAILED tests/test_visa.py::TestBridge::test_bridge_alerta_mas_continua_se_so_alguns_canonicos - AssertionError: bridge deveria seguir:
+  
+assert 1 == 0
+ +  where 1 = CompletedProcess(args=['/home/claude/visa-v1.4.0/.venv/bin/python3', '/home/claude/visa-v1.4.0/bin/visa', '--project-root', '/tmp/tmpc8srg4d_', 'bridge'], returncode=1, stdout='', stderr='Traceback (most recent call last):\n  File "/home/claude/visa-v1.4.0/bin/visa", line 17, in <module>\n    from visa_sdd.cli import main\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/__init__.py", line 39, in <module>\n    from .logging import (\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/logging.py", line 45\n    _G QUIET = False\n       ^^^^^\nSyntaxError: invalid syntax\n').returncode
+FAILED tests/test_visa.py::TestBridge::test_bridge_sem_visa_sdd_falha_grácil - assert 'n\xe3o existe' in ''
+ +  where '' = CompletedProcess(args=['/home/claude/visa-v1.4.0/.venv/bin/python3', '/home/claude/visa-v1.4.0/bin/visa', '--project-root', '/tmp/tmpzpxi4m04', 'bridge'], returncode=1, stdout='', stderr='Traceback (most recent call last):\n  File "/home/claude/visa-v1.4.0/bin/visa", line 17, in <module>\n    from visa_sdd.cli import main\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/__init__.py", line 39, in <module>\n    from .logging import (\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/logging.py", line 45\n    _G QUIET = False\n       ^^^^^\nSyntaxError: invalid syntax\n').stdout
+FAILED tests/test_visa.py::TestCollectorGate::test_gate_bloqueia_quando_ha_lacuna_pendente - FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmpzg2k49hl/_visa_sdd/business_model.md'
+FAILED tests/test_visa.py::TestCollectorGate::test_gate_aceita_lacuna_marcada_como_resolvido_no_heading - FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmp050nj1k_/_visa_sdd/business_model.md'
+FAILED tests/test_visa.py::TestCollectorGate::test_gate_aceita_lacuna_marcada_como_risco_aceito_no_heading - FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmp88w1zzw4/_visa_sdd/business_model.md'
+FAILED tests/test_visa.py::TestCollectorGate::test_gate_aceita_via_frontmatter_accepted_risks - FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmp_vlefomb/_visa_sdd/business_model.md'
+FAILED tests/test_visa.py::TestCollectorGate::test_gate_override_via_accept_all_risks_com_motivo - FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmpfjjk6zp0/_visa_sdd/business_model.md'
+FAILED tests/test_visa.py::TestCollectorGate::test_gate_override_sem_motivo_emite_warning - FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmpxyp60ho1/_visa_sdd/business_model.md'
+FAILED tests/test_visa.py::TestCollectorGate::test_gate_skip_completo - FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmpfut3cc0v/_visa_sdd/business_model.md'
+FAILED tests/test_visa.py::TestCollectorGate::test_gate_sem_gaps_md_nao_bloqueia - FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmpy9dbz1uj/_visa_sdd/business_model.md'
+FAILED tests/test_visa.py::TestCollectorGate::test_gate_inline_lacuna_sem_id_estruturado_bloqueia - FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmp4xoduwsh/_visa_sdd/business_model.md'
+FAILED tests/test_visa.py::TestUninstall::test_uninstall_remove_skills_e_state - AssertionError: assert False
+ +  where False = exists()
+ +    where exists = (PosixPath('/tmp/tmpbpab9ofh') / '.visa').exists
+FAILED tests/test_visa.py::TestUninstall::test_uninstall_preserva_visa_sdd_por_default - FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmp3cbixzow/_visa_sdd/user-content.md'
+FAILED tests/test_visa.py::TestUninstall::test_uninstall_purge_remove_visa_sdd - FileNotFoundError: [Errno 2] No such file or directory: '/tmp/tmpv1k1ek4p/_visa_sdd/x.md'
+FAILED tests/test_visa.py::TestUninstall::test_uninstall_sem_visa_instalada_e_idempotente - assert 1 == 0
+ +  where 1 = CompletedProcess(args=['/home/claude/visa-v1.4.0/.venv/bin/python3', '/home/claude/visa-v1.4.0/bin/visa', '--project-root', '/tmp/tmpntqdu9ar', 'uninstall', '--yes'], returncode=1, stdout='', stderr='Traceback (most recent call last):\n  File "/home/claude/visa-v1.4.0/bin/visa", line 17, in <module>\n    from visa_sdd.cli import main\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/__init__.py", line 39, in <module>\n    from .logging import (\n  File "/home/claude/visa-v1.4.0/src/visa_sdd/logging.py", line 45\n    _G QUIET = False\n       ^^^^^\nSyntaxError: invalid syntax\n').returncode
+FAILED tests/test_visa.py::TestEndToEndComParidadeGuard::test_ciclo_completo_extrai_clausulas_reais - test_visa.SkipTest: paridade-guard não está instalado neste ambiente — este teste valida a tese central da v1.1+ e DEVE rodar antes de qualquer release. Instale com: pip install paridade-guard>=0.3.0
+======================== 30 failed, 10 passed in 2.88s =========================
