@@ -129,7 +129,7 @@ The Visa + paridade-guard duo attacks the main failure modes in LLM pipelines:
 SDD is a development methodology with a **closed feedback loop**:
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#2d2d2d'}}}%%
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#2d2d2d', 'primaryTextColor': '#ffffff'}}}%%
 stateDiagram-v2
     [*] --> PreForja: Idea
     PreForja --> Forja: Forward Discovery (Visa)
@@ -157,7 +157,7 @@ Every specification has a **canonical ID** for traceability:
 The **Collector Gate** is a computational gate that **blocks the pipeline** without evidence:
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#2d2d2d'}}}%%
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#2d2d2d', 'primaryTextColor': '#ffffff'}}}%%
 flowchart LR
     A["(&) LACUNA Detected"] --> B{Decision?}
     B -->|Resolved| C["(&) Pass Gate"]
@@ -347,7 +347,7 @@ timestamp: 2025-01-15T10:30:00Z
 ## Integration: Visa + paridade-guard
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#2d2d2d'}}}%%
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#2d2d2d', 'primaryTextColor': '#ffffff'}}}%%
 sequenceDiagram
     participant User
     participant Visa

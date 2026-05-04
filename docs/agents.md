@@ -5,7 +5,7 @@ Este documento detalha os 14 agentes especializados da Visa.
 ## Visão Geral
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#2d2d2d'}}}%%
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#2d2d2d', 'primaryTextColor': '#ffffff'}}}%%
 mindmap
   root((visa))
     Pre-Discovery
