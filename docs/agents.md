@@ -5,7 +5,6 @@ Este documento detalha os 14 agentes especializados da Visa.
 ## Visão Geral
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#2d2d2d', 'primaryTextColor': '#ffffff'}}}%%
 mindmap
   root((visa))
     Pre-Discovery
@@ -98,7 +97,6 @@ mindmap
 
 **Gate do Coletor**:
 ```mermaid
-%%{init: {'theme': 'base'}}%%
 flowchart LR
     A["(&) LACUNA Detected"] --> B{Decision?}
     B -->|Resolved| C["(&) Pass"]

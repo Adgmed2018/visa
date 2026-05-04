@@ -60,7 +60,6 @@ def cmd_bridge(args) -> int:
 ### Fluxo Completo
 
 ```mermaid
-%%{init: {'theme': 'base'}}%%
 sequenceDiagram
     participant User
     participant VisaCLI

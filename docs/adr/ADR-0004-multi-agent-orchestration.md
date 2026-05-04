@@ -65,7 +65,6 @@ visa (Orquestrador)
 ### Padrão de Iteração
 
 ```mermaid
-%%{init: {'theme': 'base'}}%%
 stateDiagram-v2
     [*] --> Etnografo: /visa
     Etnografo --> Estrategista: landscape.md, personas.md

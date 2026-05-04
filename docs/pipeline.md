@@ -5,7 +5,6 @@ Este documento descreve o pipeline completo de Spec-Driven Development (SDD) e c
 ## Visão Geral
 
 ```mermaid
-%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#2d2d2d', 'primaryTextColor': '#fff'}}}%%
 flowchart TB
     subgraph PRE["Pre-Discovery (Visa)"]
         E1["(&) Ethnographer<br/>Domain Mapping"]
@@ -90,7 +89,6 @@ flowchart TB
 ### Fase 5: Bridge
 
 ```mermaid
-%%{init: {'theme': 'base'}}%%
 sequenceDiagram
     participant User
     participant VisaCLI
@@ -170,7 +168,6 @@ _visa_sdd/
 ## Integração com Ecossistema
 
 ```mermaid
-%%{init: {'theme': 'base'}}%%
 flowchart LR
     subgraph V["Visa (Forward Discovery)"]
         V1["(&) Ethnographer"]
