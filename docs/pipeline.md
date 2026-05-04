@@ -43,13 +43,6 @@ flowchart TB
     BRIDGE --> PG --> GC
 
     PRE --> |"12 agents<br/>14 skills"| IMP
-
-    style PRE fill:#1a1a2e,stroke:#6c5ce7
-    style SYN fill:#1a1a2e,stroke:#00b894
-    style SPEC fill:#1a1a2e,stroke:#fdcb6e
-    style HANDOFF fill:#1a1a2e,stroke:#e17055
-    style BRIDGE fill:#16213e,stroke:#e94560
-    style IMP fill:#16213e,stroke:#e94560
 ```
 
 ## Fases do Pipeline
@@ -192,10 +185,6 @@ R2["(&) Detective"]
     R3 --> |"BR-MIGRAR-NNN"| PG1
     PG2 --> |"validate"| R
     PG3 --> |"block"| V
-
-    style V fill:#1a1a2e,stroke:#6c5ce7
-    style PG fill:#16213e,stroke:#e94560
-    style R fill:#1a1a2e,stroke:#00b894
 ```
 
 ## Métricas de Qualidade

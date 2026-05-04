@@ -67,13 +67,6 @@ flowchart TB
 
     SPEC -->|"BR-FUTURE-NNN|AMB-FUTURE-NNN"| BRIDGE["(&) visa bridge"]
     BRIDGE --> PG["(**) paridade-guard<br/>Gatekeeper"]
-
-    style PRE fill:#1a1a2e,stroke:#6c5ce7
-    style SYN fill:#1a1a2e,stroke:#00b894
-    style SPEC fill:#1a1a2e,stroke:#fdcb6e
-    style Handoff fill:#1a1a2e,stroke:#e17055
-    style BRIDGE fill:#16213e,stroke:#e94560
-    style PG fill:#16213e,stroke:#e94560
 ```
 
 ---
