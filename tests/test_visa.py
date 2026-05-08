@@ -37,9 +37,12 @@ class SkipTest(Exception):
 
 def _run_visa(*args, cwd):
     """Invoca o CLI da Visa em um diretório específico."""
+    import os
+    env = {**os.environ, "PYTHONIOENCODING": "utf-8"}
     result = subprocess.run(
         [sys.executable, str(VISA_BIN), "--project-root", str(cwd), *args],
         capture_output=True, text=True, check=False,
+        encoding="utf-8", env=env,
     )
     return result
 
@@ -81,13 +84,13 @@ class TestSkills:
     def test_frontmatter_tem_campos_obrigatorios(self):
         required_fields = ["name:", "description:", "license:", "metadata:"]
         for agent in self.EXPECTED_AGENTS:
-            content = (ROOT / "agents" / agent / "SKILL.md").read_text()
+            content = (ROOT / "agents" / agent / "SKILL.md").read_text(encoding="utf-8")
             head = content.split("\n---\n")[0]
             for field in required_fields:
                 assert field in head, f"{agent}: falta campo {field}"
 
     def test_orquestrador_referencia_outros_agentes(self):
-        content = (ROOT / "agents" / "visa" / "SKILL.md").read_text()
+        content = (ROOT / "agents" / "visa" / "SKILL.md").read_text(encoding="utf-8")
         # O orquestrador deve mencionar pelo menos os principais agentes
         assert "etnógrafo" in content.lower() or "etnografo" in content.lower()
         assert "estrategista" in content.lower()
@@ -115,14 +118,14 @@ class TestSkills:
             "visa-agents-help": "reversa-agents-help",
         }
         for agent, expected_inverse in one_to_one.items():
-            content = (ROOT / "agents" / agent / "SKILL.md").read_text()
+            content = (ROOT / "agents" / agent / "SKILL.md").read_text(encoding="utf-8")
             assert "inverse_of:" in content, f"{agent}: falta inverse_of"
             assert expected_inverse in content, \
                 f"{agent}: inverse_of deveria mencionar {expected_inverse}"
 
         # visa-redator é consolidação (writer + curator + designer)
         # Só exige que mencione reversa-writer (o principal espelho)
-        redator = (ROOT / "agents" / "visa-redator" / "SKILL.md").read_text()
+        redator = (ROOT / "agents" / "visa-redator" / "SKILL.md").read_text(encoding="utf-8")
         assert "inverse_of:" in redator
         assert "reversa-writer" in redator
 
@@ -133,7 +136,7 @@ class TestSkills:
                     "visa-coletor", "visa-modelador", "visa-redator",
                     "visa-revisor"]
         for agent in relevant:
-            content = (ROOT / "agents" / agent / "SKILL.md").read_text()
+            content = (ROOT / "agents" / agent / "SKILL.md").read_text(encoding="utf-8")
             assert "🟢" in content and "🟡" in content and "🔴" in content, \
                 f"{agent}: falta escala de confiança"
 
@@ -333,7 +336,7 @@ producedBy: visa-redator
 ### BR-FUTURE-001
 - **Confiança**: 🟢
 - **Descrição**: Regra de exemplo
-""")
+""", encoding="utf-8")
             (visa_sdd / "discard_log.md").write_text("""\
 ---
 schemaVersion: 1
@@ -345,7 +348,7 @@ producedBy: visa-redator
 
 ### BR-DESCARTAR-001
 - **Descrição**: Descartado
-""")
+""", encoding="utf-8")
             (visa_sdd / "ambiguity_log.md").write_text("""\
 ---
 schemaVersion: 1
@@ -358,7 +361,7 @@ producedBy: visa-redator
 ### AMB-FUTURE-001
 - **Descrição**: Ambíguo
 - **Status**: PENDENTE
-""")
+""", encoding="utf-8")
             (visa_sdd / "confidence-report.md").write_text("""\
 ---
 schemaVersion: 1
@@ -704,7 +707,7 @@ class TestUninstall:
             (tmp_root / "CLAUDE.md").write_text("# project")
             _run_visa("install", cwd=tmp_root)
             # Usuário criou conteúdo em _visa_sdd/
-            (tmp_root / "_visa_sdd" / "user-content.md").write_text("conteúdo do usuário")
+            (tmp_root / "_visa_sdd" / "user-content.md").write_text("conteúdo do usuário", encoding="utf-8")
 
             r = _run_visa("uninstall", "--yes", cwd=tmp_root)
             assert r.returncode == 0
@@ -777,9 +780,8 @@ class TestEndToEndComParidadeGuard:
     """
 
     def _paridade_guard_disponivel(self) -> bool:
-        result = subprocess.run(
-            ["which", "paridade-guard"], capture_output=True, text=True)
-        return result.returncode == 0
+        import shutil as _shutil
+        return _shutil.which("paridade-guard") is not None
 
     def test_ciclo_completo_extrai_clausulas_reais(self):
         if not self._paridade_guard_disponivel():

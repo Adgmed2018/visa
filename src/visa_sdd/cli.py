@@ -1027,6 +1027,11 @@ def cmd_uninstall(args: argparse.Namespace) -> int:
 # ============================================================================
 
 def main() -> int:
+    # Force UTF-8 on Windows (cp1252 cannot encode emojis used in output)
+    if hasattr(sys.stdout, 'reconfigure'):
+        sys.stdout.reconfigure(encoding='utf-8')
+    if hasattr(sys.stderr, 'reconfigure'):
+        sys.stderr.reconfigure(encoding='utf-8')
     parser = argparse.ArgumentParser(
         prog="visa",
         description="Visa — descoberta de produto via pipeline de agentes especializados",

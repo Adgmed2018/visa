@@ -1,0 +1,144 @@
+﻿=== VISA-SDD v1.4.2 AUDIT LOG ===
+Date: 2026-05-08T12:50:44-03:00
+Python: Python 3.14.0
+
+=== pytest -v ===
+============================= test session starts =============================
+platform win32 -- Python 3.14.0, pytest-9.0.3, pluggy-1.6.0 -- C:\Users\Godoi\AppData\Local\Python\pythoncore-3.14-64\python.exe
+cachedir: .pytest_cache
+hypothesis profile 'default'
+rootdir: D:\tests\visa-main\visa-main
+configfile: pyproject.toml
+plugins: anyio-4.12.1, hypothesis-6.152.4, cov-7.1.0, mock-3.15.1, xdist-3.8.0
+collecting ... collected 103 items
+
+tests/test_logging_exceptions.py::TestLogLevel::test_log_levels_have_expected_values PASSED [  0%]
+tests/test_logging_exceptions.py::TestLogLevel::test_log_level_str_returns_name PASSED [  1%]
+tests/test_logging_exceptions.py::TestVerbosityControls::test_set_verbosity_levels PASSED [  2%]
+tests/test_logging_exceptions.py::TestVerbosityControls::test_set_quiet_toggles PASSED [  3%]
+tests/test_logging_exceptions.py::TestVerbosityControls::test_set_structured_toggles PASSED [  4%]
+tests/test_logging_exceptions.py::TestGetLogger::test_returns_visa_logger_instance PASSED [  5%]
+tests/test_logging_exceptions.py::TestGetLogger::test_logger_has_name PASSED [  6%]
+tests/test_logging_exceptions.py::TestVisaLogger::test_info_logs_to_stderr PASSED [  7%]
+tests/test_logging_exceptions.py::TestVisaLogger::test_warning_logs PASSED [  8%]
+tests/test_logging_exceptions.py::TestVisaLogger::test_error_logs PASSED [  9%]
+tests/test_logging_exceptions.py::TestVisaLogger::test_debug_suppressed_at_info_level PASSED [ 10%]
+tests/test_logging_exceptions.py::TestVisaLogger::test_quiet_suppresses_info PASSED [ 11%]
+tests/test_logging_exceptions.py::TestVisaLogger::test_extra_kwargs_appear_in_output PASSED [ 12%]
+tests/test_logging_exceptions.py::TestVisaLogger::test_structured_output_is_json PASSED [ 13%]
+tests/test_logging_exceptions.py::TestVisaErrorHierarchy::test_visa_error_base PASSED [ 14%]
+tests/test_logging_exceptions.py::TestVisaErrorHierarchy::test_not_installed_error PASSED [ 15%]
+tests/test_logging_exceptions.py::TestVisaErrorHierarchy::test_artifact_not_found PASSED [ 16%]
+tests/test_logging_exceptions.py::TestVisaErrorHierarchy::test_validation_error PASSED [ 17%]
+tests/test_logging_exceptions.py::TestVisaErrorHierarchy::test_collector_gate_error PASSED [ 18%]
+tests/test_logging_exceptions.py::TestVisaErrorHierarchy::test_bridge_error PASSED [ 19%]
+tests/test_logging_exceptions.py::TestVisaErrorHierarchy::test_symlink_error PASSED [ 20%]
+tests/test_logging_exceptions.py::TestProgressIndicators::test_progress_renders_without_error PASSED [ 21%]
+tests/test_logging_exceptions.py::TestProgressIndicators::test_progress_handles_zero_total PASSED [ 22%]
+tests/test_logging_exceptions.py::TestProgressIndicators::test_spinner_returns_object PASSED [ 23%]
+tests/test_logging_exceptions.py::TestProgressIndicators::test_spinner_start_and_stop PASSED [ 24%]
+tests/test_logging_exceptions.py::TestProgressIndicators::test_spinner_update_when_running PASSED [ 25%]
+tests/test_logging_exceptions.py::TestProgressIndicators::test_spinner_update_when_stopped_is_noop PASSED [ 26%]
+tests/test_logging_exceptions.py::TestColoredOutputs::test_success_writes_message PASSED [ 27%]
+tests/test_logging_exceptions.py::TestColoredOutputs::test_warning_writes_message PASSED [ 28%]
+tests/test_logging_exceptions.py::TestColoredOutputs::test_error_output_writes_message PASSED [ 29%]
+tests/test_logging_exceptions.py::TestColoredOutputs::test_info_top_level_writes_message PASSED [ 30%]
+tests/test_logging_exceptions.py::TestColoredOutputs::test_quiet_suppresses_success PASSED [ 31%]
+tests/test_logging_exceptions.py::TestColoredOutputs::test_quiet_suppresses_warning PASSED [ 32%]
+tests/test_logging_exceptions.py::TestColoredOutputs::test_quiet_suppresses_top_info PASSED [ 33%]
+tests/test_logging_exceptions.py::TestColoredOutputs::test_error_output_NOT_suppressed_by_quiet PASSED [ 33%]
+tests/test_logging_exceptions.py::TestProgressAdvanced::test_progress_at_completion PASSED [ 34%]
+tests/test_logging_exceptions.py::TestProgressAdvanced::test_progress_quiet_suppresses PASSED [ 35%]
+tests/test_logging_exceptions.py::TestProgressAdvanced::test_progress_partial PASSED [ 36%]
+tests/test_logging_exceptions.py::TestVisaExceptionBase::test_visa_exception_is_exception PASSED [ 37%]
+tests/test_logging_exceptions.py::TestVisaExceptionBase::test_visa_exception_with_remediation PASSED [ 38%]
+tests/test_logging_exceptions.py::TestSpecificExceptions::test_exception_can_be_instantiated_with_message[NotInstalledError] PASSED [ 39%]
+tests/test_logging_exceptions.py::TestSpecificExceptions::test_exception_can_be_instantiated_with_message[AlreadyInstalledError] PASSED [ 40%]
+tests/test_logging_exceptions.py::TestSpecificExceptions::test_exception_can_be_instantiated_with_message[AgentNotFoundError] PASSED [ 41%]
+tests/test_logging_exceptions.py::TestSpecificExceptions::test_exception_can_be_instantiated_with_message[SkillsCopyError] PASSED [ 42%]
+tests/test_logging_exceptions.py::TestSpecificExceptions::test_exception_can_be_instantiated_with_message[ArtifactNotFoundError] PASSED [ 43%]
+tests/test_logging_exceptions.py::TestSpecificExceptions::test_exception_can_be_instantiated_with_message[SchemaVersionError] PASSED [ 44%]
+tests/test_logging_exceptions.py::TestSpecificExceptions::test_exception_can_be_instantiated_with_message[CollectorGateError] PASSED [ 45%]
+tests/test_logging_exceptions.py::TestSpecificExceptions::test_exception_can_be_instantiated_with_message[LacunaNotResolvedError] PASSED [ 46%]
+tests/test_logging_exceptions.py::TestSpecificExceptions::test_exception_can_be_instantiated_with_message[BridgeError] PASSED [ 47%]
+tests/test_logging_exceptions.py::TestSpecificExceptions::test_exception_can_be_instantiated_with_message[BridgeIncompleteError] PASSED [ 48%]
+tests/test_logging_exceptions.py::TestSpecificExceptions::test_exception_can_be_instantiated_with_message[SymlinkError] PASSED [ 49%]
+tests/test_logging_exceptions.py::TestSpecificExceptions::test_exception_can_be_instantiated_with_message[ParidadeGuardNotAvailableError] PASSED [ 50%]
+tests/test_logging_exceptions.py::TestSpecificExceptions::test_exception_can_be_instantiated_with_message[UninstallError] PASSED [ 51%]
+tests/test_logging_exceptions.py::TestSpecificExceptions::test_exception_can_be_instantiated_with_message[StateCorruptedError] PASSED [ 52%]
+tests/test_logging_exceptions.py::TestSpecificExceptions::test_exception_can_be_instantiated_with_message[StateVersionError] PASSED [ 53%]
+tests/test_logging_exceptions.py::TestSpecificExceptions::test_exception_can_be_instantiated_with_message[FileSystemError] PASSED [ 54%]
+tests/test_logging_exceptions.py::TestSpecificExceptions::test_exception_can_be_instantiated_with_message[PathPermissionError] PASSED [ 55%]
+tests/test_logging_exceptions.py::TestSpecificExceptions::test_artifact_format_error_with_required_args PASSED [ 56%]
+tests/test_logging_exceptions.py::TestSpecificExceptions::test_canonical_format_error_with_required_args PASSED [ 57%]
+tests/test_logging_exceptions.py::TestSpecificExceptions::test_exceptions_are_distinct_types PASSED [ 58%]
+tests/test_logging_exceptions.py::TestSpecificExceptions::test_inheritance_hierarchy PASSED [ 59%]
+tests/test_logging_exceptions.py::TestExceptionFormatting::test_str_returns_message PASSED [ 60%]
+tests/test_logging_exceptions.py::TestExceptionFormatting::test_repr_includes_class_name PASSED [ 61%]
+tests/test_visa.py::TestSkills::test_todos_agentes_existem PASSED        [ 62%]
+tests/test_visa.py::TestSkills::test_todo_skill_tem_frontmatter PASSED   [ 63%]
+tests/test_visa.py::TestSkills::test_frontmatter_tem_campos_obrigatorios PASSED [ 64%]
+tests/test_visa.py::TestSkills::test_orquestrador_referencia_outros_agentes PASSED [ 65%]
+tests/test_visa.py::TestSkills::test_espelhamento_com_reversa_documentado PASSED [ 66%]
+tests/test_visa.py::TestSkills::test_escala_confianca_em_todos_agentes_relevantes PASSED [ 66%]
+tests/test_visa.py::TestInstall::test_install_cria_estrutura_basica PASSED [ 67%]
+tests/test_visa.py::TestInstall::test_install_copia_todos_os_agentes PASSED [ 68%]
+tests/test_visa.py::TestInstall::test_install_state_json_estruturado PASSED [ 69%]
+tests/test_visa.py::TestInstall::test_install_gera_manifest_sha256 PASSED [ 70%]
+tests/test_visa.py::TestInstall::test_install_idempotente PASSED         [ 71%]
+tests/test_visa.py::TestStatusValidate::test_status_sem_install_alerta PASSED [ 72%]
+tests/test_visa.py::TestStatusValidate::test_status_apos_install_mostra_estado PASSED [ 73%]
+tests/test_visa.py::TestStatusValidate::test_validate_detecta_artefatos_faltantes PASSED [ 74%]
+tests/test_visa.py::TestStatusValidate::test_validate_passa_com_artefatos_completos PASSED [ 75%]
+tests/test_visa.py::TestStatusValidate::test_validate_strict_rejeita_placeholder_sem_frontmatter PASSED [ 76%]
+tests/test_visa.py::TestStatusValidate::test_validate_strict_aceita_artefatos_canonicos_corretos PASSED [ 77%]
+tests/test_visa.py::TestBridge::test_bridge_cria_migration_stub_em_visa_sdd PASSED [ 78%]
+tests/test_visa.py::TestBridge::test_bridge_preserva_ids_canonicos PASSED [ 79%]
+tests/test_visa.py::TestBridge::test_bridge_rejeita_pipeline_incompleto PASSED [ 80%]
+tests/test_visa.py::TestBridge::test_bridge_alerta_mas_continua_se_so_alguns_canonicos PASSED [ 81%]
+tests/test_visa.py::TestBridge::test_bridge_sem_visa_sdd_falha_grßcil PASSED [ 82%]
+tests/test_visa.py::TestCollectorGate::test_gate_bloqueia_quando_ha_lacuna_pendente PASSED [ 83%]
+tests/test_visa.py::TestCollectorGate::test_gate_aceita_lacuna_marcada_como_resolvido_no_heading PASSED [ 84%]
+tests/test_visa.py::TestCollectorGate::test_gate_aceita_lacuna_marcada_como_risco_aceito_no_heading PASSED [ 85%]
+tests/test_visa.py::TestCollectorGate::test_gate_aceita_via_frontmatter_accepted_risks PASSED [ 86%]
+tests/test_visa.py::TestCollectorGate::test_gate_override_via_accept_all_risks_com_motivo PASSED [ 87%]
+tests/test_visa.py::TestCollectorGate::test_gate_override_sem_motivo_emite_warning PASSED [ 88%]
+tests/test_visa.py::TestCollectorGate::test_gate_skip_completo PASSED    [ 89%]
+tests/test_visa.py::TestCollectorGate::test_gate_sem_gaps_md_nao_bloqueia PASSED [ 90%]
+tests/test_visa.py::TestCollectorGate::test_gate_inline_lacuna_sem_id_estruturado_bloqueia PASSED [ 91%]
+tests/test_visa.py::TestUninstall::test_uninstall_remove_skills_e_state PASSED [ 92%]
+tests/test_visa.py::TestUninstall::test_uninstall_preserva_visa_sdd_por_default PASSED [ 93%]
+tests/test_visa.py::TestUninstall::test_uninstall_purge_remove_visa_sdd PASSED [ 94%]
+tests/test_visa.py::TestUninstall::test_uninstall_sem_visa_instalada_e_idempotente PASSED [ 95%]
+tests/test_visa.py::TestReferences::test_orquestrador_step_01_existe PASSED [ 96%]
+tests/test_visa.py::TestReferences::test_orquestrador_step_02_existe PASSED [ 97%]
+tests/test_visa.py::TestReferences::test_orquestrador_checkpoint_guide_existe PASSED [ 98%]
+tests/test_visa.py::TestReferences::test_todas_pastas_references_tem_pelo_menos_readme PASSED [ 99%]
+tests/test_visa.py::TestEndToEndComParidadeGuard::test_ciclo_completo_extrai_clausulas_reais SKIPPED tese central da v1.1+ e DEVE rodar antes
+de qualquer release. Instale com: pip install paridade-guard>=0.3.0)     [100%]
+
+======================= 102 passed, 1 skipped in 4.42s ========================
+
+=== ruff check ===
+All checks passed!
+
+=== python -m build ===
+python : * Creating isolated environment: venv+pip...
+No linha:1 caractere:509
++ ...  "`n=== python -m build ===`n"; $log += (python -m build 2>&1 | Out-S ...
++                                              ~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (* Creating isol...nt: venv+pip...:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+* Installing packages in isolated environment:
+  - hatchling
+* Getting build dependencies for sdist...
+* Building sdist...
+* Building wheel from sdist
+* Creating isolated environment: venv+pip...
+* Installing packages in isolated environment:
+  - hatchling
+* Getting build dependencies for wheel...
+* Building wheel...
+Successfully built visa_sdd-1.4.1.tar.gz and visa_sdd-1.4.1-py3-none-any.whl
+

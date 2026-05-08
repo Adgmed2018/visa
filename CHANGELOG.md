@@ -5,6 +5,47 @@ Todas as mudanças notáveis na Visa estão documentadas aqui.
 Formato: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 versionamento: [SemVer](https://semver.org/).
 
+## [1.4.2] - 2026-05-08
+
+### Corrigido — Auditoria de compatibilidade Windows
+
+Auditoria com Prompt Master de 4 fases. **4 problemas reais corrigidos**, todos
+relacionados a incompatibilidade cross-platform Windows/cp1252.
+
+#### 🔴 UnicodeEncodeError no CLI (cp1252 Windows)
+
+`cli.py` imprimia emojis (❌🌉⚪✅⚠️) que o codec cp1252 não suporta.
+Adicionado `sys.stdout/stderr.reconfigure(encoding='utf-8')` no entry point
+`main()`. **Resultado: CLI funcional em todos os terminais Windows.**
+
+#### 🔴 UnicodeDecodeError nos testes de Skills
+
+`test_visa.py` lia SKILL.md (que contém emojis 🟢🟡🔴) via `.read_text()`
+sem `encoding="utf-8"`, crashando em 4 testes. **Corrigido com encoding
+explícito em todas as chamadas.**
+
+#### 🔴 Subprocess tests sem encoding
+
+`_run_visa()` chamava `subprocess.run()` sem `encoding='utf-8'` nem
+`PYTHONIOENCODING`, herdando cp1252 do terminal. **Afetava 30 testes de
+integração.** Corrigido em todas as invocações subprocess.
+
+#### 🟡 `which` inexistente no Windows
+
+`test_visa.py:781` usava `subprocess.run(["which", ...])` — comando Unix-only.
+Substituído por `shutil.which()` (stdlib, cross-platform).
+
+### Métricas verificadas
+
+| Métrica | v1.4.1 | v1.4.2 |
+| --- | --- | --- |
+| Pytest | 69 passed + **34 failed** (Windows) | **102 passed + 1 skipped + 0 failed** |
+| ruff | All checks passed | **All checks passed** |
+| Build | OK | **OK** |
+| CLI no Windows | ❌ UnicodeEncodeError | ✅ Funcional |
+
+Log reproduzível em `docs/verification/v1.4.2/FINAL.log`.
+
 ## [1.4.1] - 2026-05-04
 
 ### Corrigido — Auditoria adversarial pós-v1.4.0
