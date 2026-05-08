@@ -9,7 +9,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 [![Code style: Ruff](https://img.shields.io/badge/Code%20style-Ruff-000000?style=flat-square&logo=ruff)](https://docs.astral.sh/ruff/)
 [![Type checked: mypy](https://img.shields.io/badge/Type%20checked-mypy%20strict-4300d4?style=flat-square&logo=mypy)](https://mypy.readthedocs.io/)
-[![Tests](https://img.shields.io/badge/Tests-87%20passing-success?style=flat-square&logo=pytest)](tests/)
+[![Tests](https://img.shields.io/badge/Tests-40%20passing-success?style=flat-square&logo=pytest)](tests/)
 [![Coverage](https://img.shields.io/badge/Coverage-80%25-cyan?style=flat-square&logo=codecov)](docs/verification/v1.4.0/)
 [![pipeline](https://img.shields.io/badge/Pipeline-SDD%20Closed%20Loop-9126f5?style=flat-square&logo=git)](docs/closed-loop.md)
 
@@ -124,9 +124,9 @@ Detalhes em [docs/closed-loop.md](docs/closed-loop.md).
 
 ## Status
 
-- **Versão atual:** v1.4.0 (Beta) — [CHANGELOG](CHANGELOG.md)
-- **87 testes passando**, mypy strict zero erros, ruff zero warnings, **coverage 80%**
-- **Verification logs:** [docs/verification/v1.4.0/](docs/verification/v1.4.0/)
+- **Versão atual:** v1.4.2 (Beta) — [CHANGELOG](CHANGELOG.md)
+- **40 testes passando**, mypy strict zero erros, ruff zero warnings
+- **Verification logs:** [docs/verification/v1.4.2/](docs/verification/v1.4.2/)
 - **Limitações conhecidas:** [docs/limitations.md](docs/limitations.md)
 
 ---

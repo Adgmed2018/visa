@@ -1,169 +1,81 @@
 # Security Policy
 
-Este documento descreve a política de segurança do projeto Visa.
+## Supported Versions
 
-## Reportando Vulnerabilidades
+We provide security updates for the **latest minor version** of each product in the Trindade SDD ecosystem. Older versions receive critical patches only when feasible.
 
-Se você descobrir uma vulnerabilidade de segurança, por favor:
+| Product | Current Version | Supported |
+|---|---|---|
+| PreForja | 0.3.x | :white_check_mark: |
+| Forja | 1.3.x | :white_check_mark: |
+| Visa | 1.4.x | :white_check_mark: |
+| paridade-guard | 0.3.x | :white_check_mark: |
+| Genese | 1.0.x | :white_check_mark: |
+| Regente | 1.0.x | :white_check_mark: |
+| Reversa | maintained by [@sandeco](https://github.com/sandeco) | see their policy |
 
-1. **Não abra issue pública** — reporte via email ou mensagem privada
-2. **Forneça detalhes suficientes** para reproduzir o problema
-3. **Aguarde confirmação** antes de publicizar
+## Reporting a Vulnerability
 
-**Email**: Abra uma issue com label `security` marcada como confidencial (GitHub)
+**Do not open a public GitHub issue for security vulnerabilities.**
 
-## Escopo de Segurança
+Instead, use one of these private channels:
 
-| Componente | Escopo | Notas |
-|------------|--------|-------|
-| `src/visa_sdd/cli.py` | ✅ Sim | CLI principal |
-| `src/visa_sdd/logging.py` | ✅ Sim | Logging estruturado |
-| `src/visa_sdd/exceptions.py` | ✅ Sim | Error handling |
-| `agents/*.md` | ⚠️ Leitura | SKILL.md são inputs, não executados |
-| `tests/*.py` | ❌ Não | Scripts de teste |
-| Docs | ❌ Não | Documentação |
+1. **GitHub Security Advisories** (preferred): use the "Report a vulnerability" button under the Security tab of the affected repo
+2. **Email:** adgmed2018@gmail.com with subject `[SECURITY] <product> <brief description>`
 
-## Ameaças Consideradas
+### What to Include
 
-### 1. Path Traversal
+- Product and version affected
+- Type of vulnerability (RCE, path traversal, prototype pollution, etc.)
+- Steps to reproduce
+- Potential impact
+- Your contact for follow-up
 
-**Descrição**: Arquivos criados fora do diretório esperado.
+### Our Commitment
 
-**Mitigação**:
-```python
-# Verificar que path está dentro do projeto
-def safe_path(base: Path, target: Path) -> Path:
-    resolved = target.resolve()
-    if not str(resolved).startswith(str(base.resolve())):
-        raise SecurityError("Path traversal detected")
-    return resolved
-```
+| Step | SLA |
+|---|---|
+| Acknowledgment | Within 48 hours |
+| Initial assessment | Within 7 days |
+| Fix for critical (RCE, exfiltration) | Within 14 days |
+| Fix for high (DoS, auth bypass) | Within 30 days |
+| Fix for medium/low | Next regular release |
+| Public disclosure | Coordinated with reporter (typically 90 days after fix) |
 
-### 2. Symlink Attacks
+We follow [responsible disclosure](https://en.wikipedia.org/wiki/Coordinated_vulnerability_disclosure) practices.
 
-**Descrição**: Criação de symlinks maliciosos durante `visa bridge`.
+### Recognition
 
-**Mitigação**:
-```python
-# Verificar antes de criar symlink
-def safe_symlink(src: Path, dst: Path) -> None:
-    if dst.is_symlink() or dst.is_file():
-        dst.unlink()  # Remove existente
-    dst.symlink_to(src.resolve())
-```
+Security researchers who report valid vulnerabilities will be credited in the release notes (unless they request anonymity). We don't currently have a paid bug bounty, but **legitimate finds get public acknowledgment and our gratitude**.
 
-### 3. Manifest Tampering
+## Security Best Practices for Users
 
-**Descrição**: Modificação do SHA-256 manifest.
+If you use Trindade SDD tools in production:
 
-**Mitigação**:
-```python
-# Verificar integridade do manifest
-def verify_manifest(project_root: Path) -> bool:
-    manifest_path = project_root / ".visa" / "_config" / "files-manifest.json"
-    manifest = json.loads(manifest_path.read_text())
-    
-    for rel_path, expected_hash in manifest.items():
-        full = project_root / rel_path
-        if not full.exists():
-            return False
-        actual_hash = hashlib.sha256(full.read_bytes()).hexdigest()
-        if actual_hash != expected_hash:
-            return False
-    return True
-```
+- **Pin versions** in your `package.json` / `pyproject.toml` (avoid `^` for major dependencies)
+- **Enable Renovate or Dependabot** to track CVE alerts
+- **Run `npm audit` / `pip-audit`** in your CI
+- **Don't commit** `state.json` if it contains sensitive data
+- **Review manifest hashes** after `update` if running in regulated environments
 
-### 4. Arbitrary Code Execution via Skills
+## Threat Model Assumptions
 
-**Descrição**: Skills maliciosas injectadas em `agents/`.
+Trindade SDD tools are **developer tools**, not production runtime components. Threats we explicitly consider:
 
-**Mitigação**:
-- Skills são SKILL.md (Markdown), não Python executável
-- Manifest SHA-256 verifica integridade
-- Apenas arquivos com extensão `.md` são instalados
+- :white_check_mark: Malicious npm/PyPI tarballs (mitigated via OIDC provenance)
+- :white_check_mark: Path traversal in `--output` flags (mitigated via path validation)
+- :white_check_mark: Prototype pollution from user input (mitigated via JSON Schema validation)
 
-### 5. Dependency Confusion
+Threats **NOT** in our model:
 
-**Descrição**: Pacote malicioso com nome similar.
+- :x: Malicious LLM generating malicious code (your responsibility -- review what agents produce)
+- :x: Compromised IDE or terminal (out of scope)
+- :x: Local filesystem with malicious files (we trust the project root)
 
-**Mitigação**:
-- Visa não tem dependências externas (100% stdlib)
-- Verificação de签名 não aplicável (sem dependências)
+## Hall of Fame
 
-## Práticas de Desenvolvimento Seguro
-
-### Princípios
-
-1. **Minimalismo**: 100% stdlib — superfície de ataque mínima
-2. **Defense in Depth**: Múltiplas camadas de validação
-3. **Fail Secure**: Falhas devem bloquear, não permitir bypass
-4. **Auditability**: SHA-256 manifest para verificação
-
-### Code Review Checklist
-
-- [ ] Paths são normalizados e validados
-- [ ] Symlinks não apontam para fora do projeto
-- [ ] Manifest é verificado em uninstall
-- [ ] Exit codes são apropriados para cada erro
-- [ ] Não há hardcoded secrets
-
-### Testing de Segurança
-
-```bash
-# Verificar que não há secrets hardcoded
-grep -r "password\|secret\|api_key\|token" src/ tests/ || echo "✅ No hardcoded secrets"
-
-# Verificar que manifest é gerado
-python3 -c "
-from pathlib import Path
-import json
-
-manifest = Path('.visa/_config/files-manifest.json')
-if manifest.exists():
-    data = json.loads(manifest.read_text())
-    print(f'✅ Manifest has {len(data)} entries')
-else:
-    print('❌ Manifest not found')
-"
-
-# Testar path traversal
-python3 -c "
-from pathlib import Path
-
-def safe_path(base, target):
-    resolved = Path(target).resolve()
-    if not str(resolved).startswith(str(base.resolve())):
-        raise Exception('Path traversal')
-    return resolved
-
-# Test
-base = Path('/tmp/project')
-try:
-    safe_path(base, '/etc/passwd')
-    print('❌ Path traversal allowed!')
-except Exception:
-    print('✅ Path traversal blocked')
-"
-```
-
-## Vulnerabilidades Conhecidas
-
-| ID | Severity | Status | Description |
-|----|----------|--------|-------------|
-| None | - | - | Nenhuma vulnerabilidade conhecida |
-
-## Atualizações de Segurança
-
-Este policy é revisado mensalmente. Última revisão: 2025-01-15
+(Empty for now. Be the first?)
 
 ---
 
-## Contato
-
-Para questões de segurança: Abra issue com label `security` ou contate diretamente.
-
----
-
-<p align="center">
-<strong>Security is not a feature — it's a requirement.</strong>
-</p>
+Last updated: 2026-05-08
