@@ -1,0 +1,65 @@
+==================================================================
+VISA — VERIFICATION LOG v1.4.2 + v1.5.0 + v1.6.0
+Data: 2026-05-10T04:08:05Z
+==================================================================
+
+---PYPROJECT VERSION---
+name = "visa-sdd"
+version = "1.4.2"
+
+---PYTHON LINT (ruff)---
+All checks passed!
+
+---TEST SUITE 1: logging + exceptions (63 tests)---
+........................                                                 [100%]
+
+============================== 63 passed in 0.26s ==============================
+
+---TEST SUITE 2: visa core (39 tests; 1 e2e deselected)---
+tests/test_visa.py .......................................               [100%]
+
+======================= 39 passed, 1 deselected in 5.90s =======================
+
+---NEW SUBCOMMANDS REGISTERED---
+            {install,status,validate,bridge,serve,telemetry,doctor,upgrade,uninstall}
+  {install,status,validate,bridge,serve,telemetry,doctor,upgrade,uninstall}
+    serve               Sobe Web UI minima para visualizar _visa_sdd/ (NOVO
+    telemetry           Gerencia telemetria opt-in (NOVO v1.6.0)
+    doctor              Diagnostico de instalacao (NOVO v1.5.0)
+    upgrade             Atualiza skills sem reinstalar (NOVO v1.5.0)
+
+---ENGINES SUPPORTED (E1)---
+  claude-code     entry=CLAUDE.md
+  codex           entry=AGENTS.md
+  cursor          entry=.cursorrules
+  gemini-cli      entry=GEMINI.md
+  antigravity     entry=ANTIGRAVITY.md
+  windsurf        entry=.windsurfrules
+
+---AGENTES TOTAIS (14 + 1 builder + 3 verticais = 18)---
+18
+visa
+visa-agents-help
+visa-claude-md-builder
+visa-coletor
+visa-data-modeler
+visa-design-system
+visa-estrategista
+visa-etnografo
+visa-handoff
+visa-inspector
+visa-modelador
+visa-paradigm-advisor
+visa-redator
+visa-revisor
+visa-strategist
+visa-vertical-fintech-pix
+visa-vertical-healthtech-anvisa
+visa-vertical-legaltech-tributario
+
+---MYPY PY.TYPED MARKER (T11)---
+-rwx------ 1 zealous-sleepy-bohr zealous-sleepy-bohr 0 May 10 04:01 src/visa_sdd/py.typed
+
+==================================================================
+FIM DO LOG
+==================================================================

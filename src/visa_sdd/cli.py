@@ -24,9 +24,9 @@ import shutil
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
-
-VISA_VERSION = "1.3.0"
+VISA_VERSION = "1.4.2"
 
 # Engines suportadas (espelho do detector.js do Reversa)
 ENGINES = [
@@ -37,6 +37,12 @@ ENGINES = [
     {"id": "cursor", "name": "Cursor", "entry": ".cursorrules",
      "skills_dir": ".agents/skills", "universal": ".agents/skills"},
     {"id": "gemini-cli", "name": "Gemini CLI", "entry": "GEMINI.md",
+     "skills_dir": ".agents/skills", "universal": ".agents/skills"},
+    # E1 v1.4.2: Antigravity (Google IDE) - audiencia EngIA
+    {"id": "antigravity", "name": "Google Antigravity", "entry": "ANTIGRAVITY.md",
+     "skills_dir": ".agents/skills", "universal": ".agents/skills"},
+    # E1 v1.4.2: Windsurf (Codeium)
+    {"id": "windsurf", "name": "Windsurf", "entry": ".windsurfrules",
      "skills_dir": ".agents/skills", "universal": ".agents/skills"},
 ]
 
@@ -209,7 +215,7 @@ def cmd_install(args: argparse.Namespace) -> int:
     # State inicial
     state_path = visa_state / "state.json"
     if not state_path.exists():
-        state = {
+        state: dict[str, Any] = {
             "version": VISA_VERSION,
             "project": project_root.name,
             "user_name": "",
@@ -269,7 +275,7 @@ def cmd_install(args: argparse.Namespace) -> int:
     return 0
 
 
-def _detect_engines(project_root: Path) -> list[dict]:
+def _detect_engines(project_root: Path) -> list[dict[str, Any]]:
     detected = []
     for engine in ENGINES:
         if (project_root / engine["entry"]).exists():
@@ -380,9 +386,9 @@ def cmd_status(args: argparse.Namespace) -> int:
     # Bridge para paridade-guard
     contract_path = project_root / "_visa_sdd" / "parity_audit" / "contract.json"
     if contract_path.exists():
-        print(f" paridade-guard: ✅ contrato gerado")
+        print(" paridade-guard: ✅ contrato gerado")
     else:
-        print(f" paridade-guard: ⚪ não conectado")
+        print(" paridade-guard: ⚪ não conectado")
 
     print("═" * 64)
     return 0
@@ -403,7 +409,7 @@ def cmd_validate(args: argparse.Namespace) -> int:
     strict = getattr(args, "strict", False)
     result = _validate_artifacts(output_folder, strict=strict)
 
-    print(f"Validação de _visa_sdd/" + (" (modo --strict)" if strict else ""))
+    print("Validação de _visa_sdd/" + (" (modo --strict)" if strict else ""))
     print(f"  Obrigatórios: {result['present_required']}/{result['total_required']}")
     print(f"  Opcionais:    {result['present_optional']}/{result['total_optional']}")
     if strict:
@@ -411,29 +417,29 @@ def cmd_validate(args: argparse.Namespace) -> int:
               f"{result['canonical_valid']}/{result['canonical_total']}")
 
     if result["missing_required"]:
-        print(f"\n🛑 Artefatos obrigatórios faltando:")
+        print("\n🛑 Artefatos obrigatórios faltando:")
         for m in result["missing_required"]:
             print(f"   - {m}")
         return 2
 
     if strict and result["canonical_issues"]:
-        print(f"\n🛑 Artefatos canônicos com formato inválido:")
+        print("\n🛑 Artefatos canônicos com formato inválido:")
         for issue in result["canonical_issues"]:
             print(f"   - {issue}")
-        print(f"\nDica: o Redator v1.1+ deve emitir front-matter YAML com "
-              f"`schemaVersion: 1` e `kind: <correto>`, e os IDs canônicos "
-              f"devem aparecer como `### BR-FUTURE-NNN` etc.")
+        print("\nDica: o Redator v1.1+ deve emitir front-matter YAML com "
+              "`schemaVersion: 1` e `kind: <correto>`, e os IDs canônicos "
+              "devem aparecer como `### BR-FUTURE-NNN` etc.")
         return 3
 
     if result["present_required"] == result["total_required"]:
-        print(f"\n✅ Todos os artefatos obrigatórios presentes.")
+        print("\n✅ Todos os artefatos obrigatórios presentes.")
         if strict:
-            print(f"   E todos os canônicos seguem formato Reversa-compatível.")
+            print("   E todos os canônicos seguem formato Reversa-compatível.")
         if result["missing_optional"]:
             print(f"   ({len(result['missing_optional'])} opcionais ausentes — ok)")
         if not strict:
-            print(f"\nℹ️  Para validar TAMBÉM o formato canônico (front-matter, IDs):")
-            print(f"   visa validate --strict")
+            print("\nℹ️  Para validar TAMBÉM o formato canônico (front-matter, IDs):")
+            print("   visa validate --strict")
         return 0
 
     return 1
@@ -445,7 +451,7 @@ _KIND_RE = re.compile(r"^kind\s*:\s*(.+?)\s*$", re.MULTILINE)
 _SCHEMA_RE = re.compile(r"^schemaVersion\s*:\s*(\d+)\s*$", re.MULTILINE)
 
 
-def _check_canonical_format(path: Path, rules: dict) -> list[str]:
+def _check_canonical_format(path: Path, rules: dict[str, Any]) -> list[str]:
     """Verifica formato canônico de um artefato.
 
     Retorna lista de problemas encontrados (vazia se ok).
@@ -495,7 +501,7 @@ def _check_canonical_format(path: Path, rules: dict) -> list[str]:
     return problems
 
 
-def _validate_artifacts(output_folder: Path, strict: bool = False) -> dict:
+def _validate_artifacts(output_folder: Path, strict: bool = False) -> dict[str, Any]:
     present_required = []
     missing_required = []
     for art in EXPECTED_ARTIFACTS["required"]:
@@ -585,7 +591,7 @@ _RISK_ACCEPTED_MARKERS = {"RISCO ACEITO", "RISK ACCEPTED", "ACEITO"}
 _RESOLVED_MARKERS = {"RESOLVIDO", "RESOLVED", "VALIDADO", "FALSEADO"}
 
 
-def _detect_lacunas(gaps_path: Path) -> dict:
+def _detect_lacunas(gaps_path: Path) -> dict[str, Any]:
     """Detecta LACUNAS em gaps.md e classifica por status.
 
     Retorna dict com:
@@ -595,7 +601,7 @@ def _detect_lacunas(gaps_path: Path) -> dict:
       - resolved: LACUNAS resolvidas/validadas/falseadas
       - has_frontmatter_accepted_risks: bool — usuário usou front-matter
     """
-    result = {
+    result: dict[str, Any] = {
         "all": [],
         "pending": [],
         "risk_accepted": [],
@@ -707,7 +713,7 @@ def _check_collector_gate(
 
     if accept_all:
         msgs.append("")
-        msgs.append(f"⚠️  --accept-all-risks ativado.")
+        msgs.append("⚠️  --accept-all-risks ativado.")
         if accept_reason:
             msgs.append(f"   Motivo: {accept_reason}")
         else:
@@ -722,7 +728,7 @@ def _check_collector_gate(
 
     # Bloqueio
     msgs.append("")
-    msgs.append(f"🛑 BRIDGE BLOQUEADA pelo gate do Coletor.")
+    msgs.append("🛑 BRIDGE BLOQUEADA pelo gate do Coletor.")
     msgs.append("")
     msgs.append(f"   {len(pending)} LACUNA(s) sem decisão explícita:")
     for lid in pending[:10]:
@@ -792,7 +798,7 @@ def cmd_bridge(args: argparse.Namespace) -> int:
         print(f"❌ {visa_dir} não existe. Execute a Visa primeiro.")
         return 1
 
-    print(f"🌉 Conectando Visa ao paridade-guard")
+    print("🌉 Conectando Visa ao paridade-guard")
     print(f"   Origem: {visa_dir}")
     print()
 
@@ -908,17 +914,228 @@ def cmd_bridge(args: argparse.Namespace) -> int:
     print(f"Ponte construída: {bridged} arquivos em {migration_stub.relative_to(project_root)}/")
     print()
     print("Próximos passos:")
-    print(f"   1. paridade-guard contract \\")
-    print(f"        --migration-dir _visa_sdd/migration \\")
-    print(f"        --output _visa_sdd/parity_audit/contract.json")
-    print(f"      (extractor v0.3+ entende BR-FUTURE-NNN e AMB-FUTURE-NNN)")
-    print(f"   2. Inspecione _visa_sdd/parity_audit/contract.json")
-    print(f"   3. paridade-guard install --pre-commit")
+    print("   1. paridade-guard contract \\")
+    print("        --migration-dir _visa_sdd/migration \\")
+    print("        --output _visa_sdd/parity_audit/contract.json")
+    print("      (extractor v0.3+ entende BR-FUTURE-NNN e AMB-FUTURE-NNN)")
+    print("   2. Inspecione _visa_sdd/parity_audit/contract.json")
+    print("   3. paridade-guard install --pre-commit")
     print()
     print("ℹ️  paridade-guard ≥ 0.3.0 reconhece artefatos forward nativamente.")
     print("    Versões anteriores tratam BR-FUTURE como prefixo desconhecido")
     print("    e geram contrato vazio — atualize antes.")
 
+    return 0
+
+
+# ============================================================================
+# serve (NOVO v1.6.0 — P6): Web UI minima
+# ============================================================================
+
+def cmd_serve(args: argparse.Namespace) -> int:
+    """Sobe Web UI minima (stdlib only) para visualizar _visa_sdd/."""
+    from . import webui
+    project_root = Path(args.project_root).resolve()
+    port = int(getattr(args, "port", 8080))
+    try:
+        webui.serve(project_root, port, VISA_VERSION)
+    except OSError as e:
+        print(f"[ERRO] Nao consegui subir servidor na porta {port}: {e}")
+        return 1
+    return 0
+
+
+# ============================================================================
+# telemetry (NOVO v1.6.0 — P4): opt-in, opt-out, status, purge
+# ============================================================================
+
+def cmd_telemetry(args: argparse.Namespace) -> int:
+    """Gerenciamento de telemetria opt-in (privacidade-first).
+
+    Subcomandos: on, off, status, purge.
+    """
+    from . import telemetry as _t
+    project_root = Path(args.project_root).resolve()
+    action = getattr(args, "telemetry_action", "status")
+
+    if action == "on":
+        _t.opt_in(project_root)
+        print("[OK] Telemetria ATIVADA neste projeto.")
+        print("     Eventos contados serao salvos em .visa/telemetry.jsonl")
+        print("     Para enviar a servidor proprio, defina VISA_TELEMETRY_ENDPOINT")
+        print("     Para desligar: visa telemetry off")
+        return 0
+    if action == "off":
+        _t.opt_out(project_root)
+        print("[OK] Telemetria DESLIGADA neste projeto.")
+        return 0
+    if action == "purge":
+        n = _t.purge(project_root)
+        print(f"[OK] {n} arquivo(s) de telemetria removidos (direito ao esquecimento).")
+        return 0
+    # status
+    enabled = _t._is_enabled(project_root)
+    print(f"Telemetria: {'ATIVADA' if enabled else 'DESLIGADA'}")
+    if enabled:
+        log = project_root / ".visa" / "telemetry.jsonl"
+        if log.exists():
+            print(f"Log local: {log} ({sum(1 for _ in log.open(encoding='utf-8'))} eventos)")
+    print("Use: visa telemetry [on|off|status|purge]")
+    return 0
+
+
+# ============================================================================
+# doctor (NOVO v1.5.0 — P1)
+# ============================================================================
+
+def cmd_doctor(args: argparse.Namespace) -> int:
+    """Diagnostico completo da instalacao da Visa."""
+    project_root = Path(args.project_root).resolve()
+    print(f"Visa Doctor v{VISA_VERSION}")
+    print(f"Projeto: {project_root}")
+    print("=" * 60)
+    warnings = 0
+    errors = 0
+
+    detected = _detect_engines(project_root)
+    if detected:
+        print(f"[OK] Engine(s): {', '.join(e['name'] for e in detected)}")
+    else:
+        print("[ERRO] Nenhuma engine detectada")
+        print("       Crie entry: CLAUDE.md, ANTIGRAVITY.md, AGENTS.md, .cursorrules, GEMINI.md ou .windsurfrules")
+        errors += 1
+
+    skills_dirs_seen: set[Path] = set()
+    for engine in detected:
+        skills_dir = project_root / engine["skills_dir"]
+        if skills_dir in skills_dirs_seen:
+            continue
+        skills_dirs_seen.add(skills_dir)
+        if skills_dir.exists():
+            visa_skills = [d for d in skills_dir.iterdir()
+                           if d.is_dir() and d.name.startswith("visa")]
+            print(f"[OK] {len(visa_skills)} skills em {skills_dir.relative_to(project_root)}")
+            if len(visa_skills) < 14:
+                print("     [AVISO] Esperado >= 14 agentes; rode 'visa upgrade' ou 'visa install'")
+                warnings += 1
+        else:
+            print(f"[AVISO] {skills_dir.relative_to(project_root)} ausente — rode 'visa install'")
+            warnings += 1
+
+    state_path = project_root / ".visa" / "state.json"
+    if state_path.exists():
+        try:
+            state = json.loads(state_path.read_text(encoding="utf-8"))
+            print(f"[OK] State: phase={state.get('phase')}, version={state.get('version')}")
+            if state.get("version") != VISA_VERSION:
+                print(f"     [AVISO] State {state.get('version')} != CLI {VISA_VERSION} - 'visa upgrade'")
+                warnings += 1
+        except (OSError, json.JSONDecodeError) as e:
+            print(f"[AVISO] State corrompido: {e}")
+            warnings += 1
+    else:
+        print("[INFO] State nao iniciado (.visa/state.json) — normal pre-/visa")
+
+    sdd_dir = project_root / "_visa_sdd"
+    if sdd_dir.exists():
+        artifacts = list(sdd_dir.rglob("*.md")) + list(sdd_dir.rglob("*.yaml"))
+        print(f"[OK] _visa_sdd/: {len(artifacts)} artefatos")
+    else:
+        print("[INFO] _visa_sdd/ ausente — normal pre-descoberta")
+
+    try:
+        import importlib.util
+        if importlib.util.find_spec("paridade_guard") is not None:
+            print("[OK] paridade-guard disponivel (closed loop habilitado)")
+        else:
+            print("[INFO] paridade-guard ausente (pip install paridade-guard>=0.3.0)")
+    except Exception:
+        print("[INFO] Nao foi possivel checar paridade-guard")
+
+    print("=" * 60)
+    if errors:
+        print(f"[ERRO] {errors} erro(s), {warnings} aviso(s)")
+        return 2
+    if warnings:
+        print(f"[AVISO] {warnings} aviso(s)")
+        return 1
+    print("[OK] Instalacao saudavel")
+    try:
+        from . import telemetry as _t
+        _t.emit(project_root, "doctor", visa_version=VISA_VERSION,
+                engines=[e["id"] for e in detected])
+    except Exception:
+        pass
+    return 0
+
+
+# ============================================================================
+# upgrade (NOVO v1.5.0 — P2)
+# ============================================================================
+
+def cmd_upgrade(args: argparse.Namespace) -> int:
+    """Atualiza skills da Visa sem reinstalar do zero."""
+    project_root = Path(args.project_root).resolve()
+    print(f"Visa Upgrade v{VISA_VERSION}")
+    print(f"Projeto: {project_root}")
+
+    detected = _detect_engines(project_root)
+    if not detected:
+        print("[ERRO] Nenhuma engine detectada")
+        return 1
+
+    pkg_agents_dir = Path(__file__).parent / "agents"
+    if not pkg_agents_dir.exists():
+        pkg_agents_dir = Path(__file__).parent.parent.parent / "agents"
+    if not pkg_agents_dir.exists():
+        print(f"[ERRO] Agents nao encontrados em {pkg_agents_dir}")
+        return 1
+
+    updated = added = unchanged = 0
+    skills_dirs_seen: set[Path] = set()
+    for engine in detected:
+        skills_dir = project_root / engine["skills_dir"]
+        if skills_dir in skills_dirs_seen:
+            continue
+        skills_dirs_seen.add(skills_dir)
+        skills_dir.mkdir(parents=True, exist_ok=True)
+        for src_agent in pkg_agents_dir.iterdir():
+            if not src_agent.is_dir() or not src_agent.name.startswith("visa"):
+                continue
+            dst_agent = skills_dir / src_agent.name
+            if not dst_agent.exists():
+                shutil.copytree(src_agent, dst_agent)
+                added += 1
+                continue
+            src_skill = src_agent / "SKILL.md"
+            dst_skill = dst_agent / "SKILL.md"
+            if src_skill.exists() and dst_skill.exists():
+                src_h = hashlib.sha256(src_skill.read_bytes()).hexdigest()
+                dst_h = hashlib.sha256(dst_skill.read_bytes()).hexdigest()
+                if src_h != dst_h:
+                    shutil.rmtree(dst_agent)
+                    shutil.copytree(src_agent, dst_agent)
+                    updated += 1
+                else:
+                    unchanged += 1
+
+    state_path = project_root / ".visa" / "state.json"
+    if state_path.exists():
+        try:
+            state = json.loads(state_path.read_text(encoding="utf-8"))
+            state["version"] = VISA_VERSION
+            state_path.write_text(json.dumps(state, indent=2, ensure_ascii=False),
+                                  encoding="utf-8")
+        except (OSError, json.JSONDecodeError):
+            pass
+
+    print(f"[OK] Adicionados: {added} | Atualizados: {updated} | Inalterados: {unchanged}")
+    try:
+        from . import telemetry as _t
+        _t.emit(project_root, "upgrade", visa_version=VISA_VERSION,
+                added=added, updated=updated, unchanged=unchanged)
+    except Exception:
+        pass
     return 0
 
 
@@ -955,14 +1172,14 @@ def cmd_uninstall(args: argparse.Namespace) -> int:
 
     # Confirmação interativa, exceto se --yes
     if not args.yes:
-        print(f"Vou remover:")
+        print("Vou remover:")
         print(f"  - {state_dir.relative_to(project_root)}/ (state, plan, manifest)")
         print(f"  - {len(created_files)} skills instaladas em "
               f".claude/skills/ e/ou .agents/skills/")
         if args.purge:
-            print(f"  - _visa_sdd/ (output de descoberta) — POR CAUSA DE --purge")
+            print("  - _visa_sdd/ (output de descoberta) — POR CAUSA DE --purge")
         else:
-            print(f"  PRESERVO: _visa_sdd/ (output de descoberta)")
+            print("  PRESERVO: _visa_sdd/ (output de descoberta)")
         print()
         try:
             answer = input("Confirma? [y/N]: ").strip().lower()
@@ -1012,13 +1229,13 @@ def cmd_uninstall(args: argparse.Namespace) -> int:
     visa_sdd = project_root / "_visa_sdd"
     if args.purge and visa_sdd.exists():
         shutil.rmtree(visa_sdd)
-        print(f"✅ _visa_sdd/ removido (--purge).")
+        print("✅ _visa_sdd/ removido (--purge).")
 
     print()
     print(f"✅ Visa desinstalada: {removed_count} arquivos/pastas de skills + .visa/")
     if not args.purge and visa_sdd.exists():
         print(f"   _visa_sdd/ preservado em {visa_sdd.relative_to(project_root)}/")
-        print(f"   Para remover também: visa uninstall --purge")
+        print("   Para remover também: visa uninstall --purge")
     return 0
 
 
@@ -1027,6 +1244,11 @@ def cmd_uninstall(args: argparse.Namespace) -> int:
 # ============================================================================
 
 def main() -> int:
+    # Force UTF-8 on Windows (cp1252 cannot encode emojis used in output)
+    if hasattr(sys.stdout, 'reconfigure'):
+        sys.stdout.reconfigure(encoding='utf-8')
+    if hasattr(sys.stderr, 'reconfigure'):
+        sys.stderr.reconfigure(encoding='utf-8')
     parser = argparse.ArgumentParser(
         prog="visa",
         description="Visa — descoberta de produto via pipeline de agentes especializados",
@@ -1068,6 +1290,25 @@ def main() -> int:
     )
     p_bridge.set_defaults(func=cmd_bridge)
 
+    # NOVO v1.6.0: serve (web UI)
+    p_serve = sub.add_parser("serve", help="Sobe Web UI minima para visualizar _visa_sdd/ (NOVO v1.6.0)")
+    p_serve.add_argument("--port", type=int, default=8080, help="porta HTTP (default: 8080)")
+    p_serve.set_defaults(func=cmd_serve)
+
+    # NOVO v1.6.0: telemetry
+    p_telem = sub.add_parser("telemetry", help="Gerencia telemetria opt-in (NOVO v1.6.0)")
+    p_telem.add_argument("telemetry_action", nargs="?", default="status",
+                         choices=["on", "off", "status", "purge"],
+                         help="acao (default: status)")
+    p_telem.set_defaults(func=cmd_telemetry)
+
+    # NOVO v1.5.0: doctor
+    p_doctor = sub.add_parser("doctor", help="Diagnostico de instalacao (NOVO v1.5.0)")
+    p_doctor.set_defaults(func=cmd_doctor)
+    # NOVO v1.5.0: upgrade
+    p_upgrade = sub.add_parser("upgrade", help="Atualiza skills sem reinstalar (NOVO v1.5.0)")
+    p_upgrade.set_defaults(func=cmd_upgrade)
+
     p_uninstall = sub.add_parser("uninstall",
                                  help="Remove skills/state da Visa (preserva _visa_sdd/)")
     p_uninstall.add_argument("--yes", "-y", action="store_true",
@@ -1077,7 +1318,8 @@ def main() -> int:
     p_uninstall.set_defaults(func=cmd_uninstall)
 
     args = parser.parse_args()
-    return args.func(args)
+    result: int = args.func(args)
+    return result
 
 
 if __name__ == "__main__":

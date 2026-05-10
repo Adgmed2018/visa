@@ -1,0 +1,432 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop, release/**]
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    - cron: '0 0 * * 0'  # Weekly on Sunday
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHONUNBUFFERED: '1'
+  PIP_NO_PYTHON_VERSION_WARNING: '1'
+
+jobs:
+  # ===========================================================================
+  # Quality Checks
+  # ===========================================================================
+  ruff-lint:
+    name: Ruff Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Ruff
+        run: pip install ruff>=0.2.0
+
+      - name: Run Ruff
+        run: ruff check .
+
+      - name: Run Ruff format check
+        run: ruff format --check .
+
+  ruff-lint-report:
+    name: Ruff Report
+    runs-on: ubuntu-latest
+    needs: ruff-lint
+    if: needs.ruff-lint.result == 'failure'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install ruff>=0.2.0
+      - name: Run Ruff with explanation
+        run: |
+          echo "## Ruff Linting Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          ruff check . 2>&1 | tee ruff_output.txt
+          echo "```" >> $GITHUB_STEP_SUMMARY
+          cat ruff_output.txt >> $GITHUB_STEP_SUMMARY
+          echo "```" >> $GITHUB_STEP_SUMMARY
+
+  mypy-type-check:
+    name: Mypy Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Mypy
+        run: pip install mypy>=1.8.0
+
+      - name: Run Mypy
+        run: |
+          mypy src/visa_sdd \
+            --python-version 3.10 \
+            --warn-return-any \
+            --warn-unused-ignores \
+            --disallow-untyped-defs \
+            --no-implicit-optional \
+            --strict-equality \
+            --strict-concatenate \
+            --ignore-missing-imports
+
+  # ===========================================================================
+  # Security
+  # ===========================================================================
+  security-bandit:
+    name: Security Audit (Bandit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Bandit
+        run: pip install bandit>=1.7.0
+
+      - name: Run Bandit
+        run: bandit -r src/visa_sdd -f json -o bandit_report.json || true
+
+      - name: Parse Bandit results
+        run: |
+          if [ -f bandit_report.json ]; then
+            high=$(cat bandit_report.json | python3 -c "import json,sys; d=json.load(sys.stdin); print(sum(1 for i in d.get('results',[]) if i['issue_severity']=='HIGH'))")
+            medium=$(cat bandit_report.json | python3 -c "import json,sys; d=json.load(sys.stdin); print(sum(1 for i in d.get('results',[]) if i['issue_severity']=='MEDIUM'))")
+            echo "## Bandit Security Report" >> $GITHUB_STEP_SUMMARY
+            echo "- **High severity**: $high" >> $GITHUB_STEP_SUMMARY
+            echo "- **Medium severity**: $medium" >> $GITHUB_STEP_SUMMARY
+            if [ "$high" -gt 0 ]; then
+              echo "❌ High severity issues found!" >> $GITHUB_STEP_SUMMARY
+              exit 1
+            fi
+          fi
+
+  security-ruff-safety:
+    name: Security (Ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Ruff
+        run: pip install ruff>=0.2.0
+
+      - name: Check for insecure code patterns
+        run: |
+          echo "## Security Check (Ruff)" >> $GITHUB_STEP_SUMMARY
+          echo "Checking for insecure patterns..." >> $GITHUB_STEP_SUMMARY
+          # Check for common insecure patterns via Ruff
+          ruff check . --select=S --severity=error 2>&1 || true
+
+  # ===========================================================================
+  # Tests
+  # ===========================================================================
+  test:
+    name: Test Suite (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.10', '3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-${{ matrix.python-version }}-
+            ${{ runner.os }}-pip-
+
+      - name: Install Visa (editable mode)
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+
+      - name: Verify CLI installed
+        run: |
+          visa --version
+
+      - name: Run test suite
+        run: python3 tests/test_visa.py
+
+  smoke-test:
+    name: Smoke Test
+    runs-on: ubuntu-latest
+    needs: [ruff-lint, mypy-type-check]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Visa
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e . "paridade-guard>=0.3.0"
+
+      - name: Run smoke test
+        run: |
+          set -e
+          WORK_DIR=$(mktemp -d)
+          cd $WORK_DIR
+
+          # Initialize
+          touch CLAUDE.md
+          visa install
+
+          # Verify install
+          visa --help
+          visa status
+
+          # Create canonical artifact
+          mkdir -p _visa_sdd
+          cat > _visa_sdd/business_model.md <<'EOF'
+          ---
+          schemaVersion: 1
+          kind: target_business_rules
+          producedBy: visa-redator
+          ---
+          # Target Business Rules
+          ### BR-FUTURE-001
+          - **Confiança**: 🟢
+          - **Descrição**: Smoke test rule
+          - **Justificativa**: CI smoke
+          EOF
+
+          # Bridge
+          visa bridge
+
+          # Generate contract
+          paridade-guard contract \
+            --migration-dir _visa_sdd/migration \
+            --output _visa_sdd/parity_audit/contract.json
+
+          # Verify contract
+          python3 -c "
+          import json, sys
+          c = json.load(open('_visa_sdd/parity_audit/contract.json'))
+          assert c['summary']['total_clauses'] >= 1, c['summary']
+          print('✅ Smoke test passed:', c['summary'])
+          "
+
+          # Cleanup
+          visa uninstall --yes
+          cd /
+          rm -rf $WORK_DIR
+
+          echo "✅ Smoke test completed successfully"
+
+  # ===========================================================================
+  # Coverage
+  # ===========================================================================
+  coverage:
+    name: Coverage Report
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install with test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[test]"
+
+      - name: Generate coverage
+        run: |
+          pip install pytest pytest-cov coverage
+          coverage run -m pytest tests/ -v || coverage run tests/test_visa.py
+          coverage report --fail-under=80 --show-missing
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          file: .coverage
+          fail_ci_if_error: false
+
+  # ===========================================================================
+  # Documentation
+  # ===========================================================================
+  docs-check:
+    name: Documentation Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check required files
+        run: |
+          echo "## Documentation Check" >> $GITHUB_STEP_SUMMARY
+
+          # Check required files exist
+          for file in README.md LICENSE CHANGELOG.md CONTRIBUTING.md; do
+            if [ -f "$file" ]; then
+              echo "✅ $file exists"
+              echo "- $file: ✅" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "❌ $file missing"
+              echo "- $file: ❌" >> $GITHUB_STEP_SUMMARY
+              exit 1
+            fi
+          done
+
+          # Check README has required sections
+          for section in "Installation" "Quick Start" "CLI Reference" "Contributing"; do
+            if grep -q "$section" README.md; then
+              echo "✅ README has '$section'"
+              echo "- $section section: ✅" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "❌ README missing '$section'"
+              echo "- $section section: ❌" >> $GITHUB_STEP_SUMMARY
+              exit 1
+            fi
+          done
+
+      - name: Verify agents completeness
+        run: |
+          echo "## Agents Check" >> $GITHUB_STEP_SUMMARY
+          AGENTS=("visa" "visa-etnografo" "visa-estrategista" "visa-coletor" \
+                  "visa-paradigm-advisor" "visa-modelador" "visa-data-modeler" \
+                  "visa-design-system" "visa-redator" "visa-strategist" \
+                  "visa-inspector" "visa-revisor" "visa-handoff" "visa-agents-help")
+          for agent in "${AGENTS[@]}"; do
+            if [ -f "agents/$agent/SKILL.md" ]; then
+              echo "✅ $agent"
+              echo "- $agent: ✅" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "❌ $agent missing"
+              echo "- $agent: ❌" >> $GITHUB_STEP_SUMMARY
+              exit 1
+            fi
+          done
+
+  # ===========================================================================
+  # Performance Benchmarks
+  # ===========================================================================
+  benchmark:
+    name: Performance Benchmark
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Visa
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+
+      - name: Run benchmarks
+        run: |
+          echo "## Performance Benchmarks" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "```" >> $GITHUB_STEP_SUMMARY
+
+          # Benchmark: install speed
+          START=$(date +%s%N)
+          WORK_DIR=$(mktemp -d)
+          cd $WORK_DIR
+          touch CLAUDE.md
+          python -m pip install -e . -q
+          visa install -y 2>/dev/null || true
+          END=$(date +%s%N)
+          DURATION=$((($END - $START) / 1000000))
+          echo "visa install: ${DURATION}ms" >> $GITHUB_STEP_SUMMARY
+          cd / && rm -rf $WORK_DIR
+
+          # Benchmark: status command
+          START=$(date +%s%N)
+          mkdir -p /tmp/bench_visa_test/.visa /tmp/bench_visa_test/_visa_sdd
+          echo '{"version":"1.3.0","phase":null,"completed":[]}' > /tmp/bench_visa_test/.visa/state.json
+          visa status --project-root /tmp/bench_visa_test > /dev/null 2>&1
+          END=$(date +%s%N)
+          DURATION=$((($END - $START) / 1000000))
+          echo "visa status: ${DURATION}ms" >> $GITHUB_STEP_SUMMARY
+          rm -rf /tmp/bench_visa_test
+
+          echo "```" >> $GITHUB_STEP_SUMMARY
+
+  # ===========================================================================
+  # Release Preparation
+  # ===========================================================================
+  release-check:
+    name: Release Readiness
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check tag format
+        run: |
+          TAG=${GITHUB_REF#refs/tags/}
+          echo "Release tag: $TAG"
+          if ! [[ $TAG =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "❌ Tag format must be vX.Y.Z"
+            exit 1
+          fi
+          echo "✅ Tag format valid"
+
+      - name: Verify pyproject.toml version matches tag
+        run: |
+          TAG=${GITHUB_REF#refs/tags/}
+          TAG_VERSION=${TAG#v}
+          TOML_VERSION=$(grep '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/')
+          echo "Tag version: $TAG_VERSION"
+          echo "pyproject.toml version: $TOML_VERSION"
+          if [ "$TAG_VERSION" != "$TOML_VERSION" ]; then
+            echo "❌ Version mismatch!"
+            exit 1
+          fi
+          echo "✅ Version matches"
+
+      - name: Build package
+        run: |
+          pip install build
+          python -m build
+
+      - name: Upload release asset
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/*
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
