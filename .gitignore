@@ -63,3 +63,4 @@ Thumbs.db
 _visa_sdd/
 .claude/skills/visa*
 .agents/skills/visa*
+pytest-cache-files-*
